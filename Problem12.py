@@ -21,6 +21,8 @@ import math
 
 
 def divisors(num):
+    if num == 1:
+        return [1]
     divisor_list = list()
     for i in range(1, math.ceil(math.sqrt(num))):
         if num % i == 0:
@@ -33,15 +35,17 @@ def triangle_number(index):
     return sum(range(1, index+1))
 
 
-index = 1
-while len(divisors(triangle_number(index))) <= 500:
-    index += 1
-    print(index)
+def main():
+    index = 1
+    while len(divisors(triangle_number(index))) <= 500:
+        index += 1
+        print(index)
 
-print(triangle_number(index))
+    print(triangle_number(index))
 
 
-
+if __name__ == '__main__':
+    main()
 
 
 
