@@ -23,6 +23,7 @@ What is the index of the first term in the Fibonacci sequence to contain 1000 di
 
 cache = [1, 1]
 
+
 def next_fibonacci():
     value = sum(cache)
     cache[0] = cache[1]

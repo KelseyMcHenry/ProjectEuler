@@ -6,7 +6,9 @@ What is the 10 001st prime number?
 
 import math
 
-def isPrime(num):
+
+def is_prime(num):
+    num = abs(num)
     if num == 2:
         return True
     if num % 2 == 0:
@@ -16,12 +18,18 @@ def isPrime(num):
             return False
     return True
 
-primes = list()
-value = 2
 
-while len(primes) < 10001:
-    if isPrime(value):
-        primes.append(value)
-    value += 1
+def main():
+    primes = list()
+    value = 2
 
-print(primes[-1])
+    while len(primes) < 10001:
+        if is_prime(value):
+            primes.append(value)
+        value += 1
+
+    print(primes[-1])
+
+
+if __name__ == '__main__':
+    main()
