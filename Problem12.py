@@ -24,7 +24,7 @@ def divisors(num):
     if num == 1:
         return [1]
     divisor_list = list()
-    for i in range(1, math.ceil(math.sqrt(num))):
+    for i in range(1, math.ceil(math.sqrt(num)) + 1):
         if num % i == 0:
             divisor_list.append(i)
             divisor_list.append(int(num / i))

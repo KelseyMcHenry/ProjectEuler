@@ -25,10 +25,12 @@ subset_abundant_numbers = [i for i in range(1, 28124) if is_abundant(i)]
 pairs_abundant_number_subset = product(subset_abundant_numbers, subset_abundant_numbers)
 
 can_be_written_as_sum = set([i + j for i, j in pairs_abundant_number_subset if i + j < 28124])
+print(can_be_written_as_sum)
 
-larger_set = set(range(1, max(can_be_written_as_sum) + 1))
+larger_set = set(range(1, 28124))
 
 cannot_be_written = larger_set - can_be_written_as_sum
+print(cannot_be_written)
 
 print(sum(cannot_be_written))
 
