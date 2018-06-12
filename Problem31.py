@@ -10,18 +10,15 @@ How many different ways can £2 be made using any number of coins?
 
 
 possible_ways = list()
-for twolb in range(0, 2):
-    if twolb == 1:
-        continue
-    for lb in range(0, 3):
-        for fiftyp in range(0, 5):
-            for twentyp in range(0, 11):
-                for tenp in range(0, 21):
-                    for fivep in range(0, 41):
-                        for twop in range(0, 101):
-                            for onep in range(201):
+for twolb in range(0, 1):
+    for lb in range(0, 2):
+        for fiftyp in range(0, 4):
+            for twentyp in range(0, 10):
+                for tenp in range(0, 20):
+                    for fivep in range(0, 40):
+                        for twop in range(0, 100):
+                            for onep in range(200):
                                 if (200 * twolb) + (100 * lb) + (50 * fiftyp) + (20 * twentyp) + (10 * tenp) + (5 * fivep) + (2 * twop) + onep == 200:
                                     possible_ways.append((twolb, lb, fiftyp, twentyp, tenp, fivep, twop, onep))
 
-
-print(len(possible_ways))
+print(len(possible_ways) + 8)
