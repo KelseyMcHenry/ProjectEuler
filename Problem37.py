@@ -13,13 +13,11 @@ from Problem7 import is_prime
 
 def is_truncatable_prime_LR(number):
     slices = [int(str(number)[i:]) for i in range(0, len(str(number)))]
-    # print(slices)
     return all([is_prime(slice) for slice in slices])
 
 
 def is_truncatable_prime_RL(number):
     slices = [int(str(number)[:i]) for i in range(1, len(str(number)) + 1)]
-    # print(slices)
     return all([is_prime(slice) for slice in slices])
 
 
@@ -30,8 +28,6 @@ while len(truncatable_primes) < 11:
         truncatable_primes.append(number)
         print(number)
     number += 1
-    # if number % 100 == 0:
-        # print(number)
 
 print(truncatable_primes)
 print(sum(truncatable_primes))
