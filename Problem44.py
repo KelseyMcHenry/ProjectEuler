@@ -16,16 +16,20 @@ def is_pentagonal(number):
     return ((1 + sqrt(1 + (4 * 3 * 2 * number))) / 6) % 1 == 0
 
 
-pentagonal_numbers = [i for i in range(1, 10000000) if is_pentagonal(i)]
-pentagonal_number_pairs = product(pentagonal_numbers, pentagonal_numbers)
+def main():
+    pentagonal_numbers = [i for i in range(1, 10000000) if is_pentagonal(i)]
+    pentagonal_number_pairs = product(pentagonal_numbers, pentagonal_numbers)
+
+    minimum_difference = 10000000
+    solution = 0
+    for j, k in pentagonal_number_pairs:
+        if is_pentagonal(j + k) and is_pentagonal(abs(j - k)):
+            if abs(j - k) < minimum_difference:
+                minimum_difference = abs(j - k)
+                solution = abs(j - k)
+
+    print(solution)
 
 
-minimum_difference = 10000000
-solution = 0
-for j, k in pentagonal_number_pairs:
-    if is_pentagonal(j + k) and is_pentagonal(abs(j - k)):
-        if abs(j - k) < minimum_difference:
-            minimum_difference = abs(j - k)
-            solution = abs(j - k)
-
-print(solution)
+if __name__ == '__main__':
+    main()

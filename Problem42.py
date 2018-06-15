@@ -27,15 +27,17 @@ def is_triangle_number(number):
     except ValueError:
         return False
 
+def main():
+    with open("p042_words.txt", "r") as words:
+        for line in words:
+            word_list = (line.replace('"', '').split(','))
 
-with open("p042_words.txt", "r") as words:
-    for line in words:
-        word_list = (line.replace('"', '').split(','))
+    triangle_word_count = 0
+    for word in word_list:
+        if is_triangle_number(word_score(word)):
+            triangle_word_count += 1
 
-triangle_word_count = 0
-for word in word_list:
-    if is_triangle_number(word_score(word)):
-        triangle_word_count += 1
+    print(triangle_word_count)
 
-print(triangle_word_count)
-
+if __name__ == '__main__':
+    main()
