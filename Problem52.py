@@ -18,4 +18,5 @@ while not solved:
     digits_in_values = [digits_in_int(val) for val in values]
     if all(digit_list == digits_in_values[0] for digit_list in digits_in_values):
         print(x)
+        solved = True
     x += 1
