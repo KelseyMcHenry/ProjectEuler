@@ -19,8 +19,9 @@ from datetime import timedelta
 sunday_count = 0
 start_date = date(1901, 1, 1)
 while start_date <= date(2000, 12, 31):
-    if start_date.weekday() == 0 and start_date.day == 1:
+    if start_date.weekday() == 6 and start_date.day == 1:
         sunday_count += 1
+        print(f'{start_date.month} / {start_date.day} / {start_date.year} ---- {sunday_count}')
     start_date += timedelta(days=1)
 
 print(sunday_count)

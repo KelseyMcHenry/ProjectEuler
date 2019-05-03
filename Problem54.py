@@ -92,7 +92,7 @@ class Hand:
         return {card.get_value(): values.count(card.get_value()) for card in self.cards}
 
     def quick_hand(self):
-        if self.is_flush() and self.is_straight() and self.high_card().value() == "A":
+        if self.is_flush() and self.is_straight() and self.high_card().get_value() == "A":
             return "Royal Flush"
         elif self.is_flush() and self.is_straight():
             return "Straight Flush"
@@ -279,19 +279,3 @@ with open('p054_poker.txt') as hands_file:
         line = hands_file.readline()
 
 print(f'Player 1 won {player1_wins} hands')
-
-# deck = Deck()
-# hand1 = deck.draw_hand(5)
-# hand2 = deck.draw_hand(5)
-#
-# print(hand1.quick_hand())
-# print(hand2.quick_hand())
-# print()
-# comp_value = hand1.compare(hand2)
-# if comp_value < 0:
-#     print("Hand 1 wins")
-# elif comp_value == 0:
-#     print("Tie")
-# elif comp_value > 0:
-#     print("Hand 2 wins")
-

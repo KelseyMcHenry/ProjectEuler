@@ -14,7 +14,7 @@ from Problem7 import is_prime
 primes = [i for i in range(2, 1000000) if is_prime(i)]
 print(primes)
 
-#truncate down the primes list
+# truncate down the primes list
 sum_val = 0
 largest_prime = 0
 for prime in primes:

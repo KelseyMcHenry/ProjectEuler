@@ -15,7 +15,7 @@ What is the sum of the numbers on the diagonals in a 1001 by 1001 spiral formed 
 # (Right, Down, Left, Up, Right)
 unmapped_movements = [(1, i-2, i-1, i-1, i-1) for i in range(3, 1003, 2)]
 mapped_movements = list()
-
+'comment'
 print(unmapped_movements)
 
 for move in unmapped_movements:
