@@ -7,26 +7,7 @@ For example, the proper divisors of 220 are 1, 2, 4, 5, 10, 11, 20, 22, 44, 55 a
 Evaluate the sum of all the amicable numbers under 10000.
 """
 
-from Problem12 import divisors
-
-
-def proper_divisors(number):
-    divisor_list = divisors(number)
-    if len(divisor_list) > 1:
-        divisor_list.remove(number)
-    return divisor_list
-
-
-def d(number):
-    return sum(proper_divisors(number))
-
-
-def is_amicable(number):
-    value = d(number)
-    if d(value) == number and value != number:
-        return True
-    else:
-        return False
+from HelperFunctions import is_amicable
 
 
 def main():

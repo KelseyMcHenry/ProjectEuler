@@ -5,7 +5,7 @@ What is the largest n-digit pandigital prime that exists?
 """
 
 from itertools import permutations
-from Problem7 import is_prime
+from HelperFunctions import is_prime
 
 for n in range(9, 2, -1):
     digits = [str(i) for i in range(1, n)]

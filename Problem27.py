@@ -15,7 +15,7 @@ e.g. |11|=11 and |−4|=4
 Find the product of the coefficients, a and b, for the quadratic expression that produces the maximum number of primes for consecutive values of n, starting with n=0.
 """
 
-from Problem7 import is_prime
+from HelperFunctions import is_prime
 
 max_prime_run = 0
 answer = (0, 0)

@@ -4,12 +4,7 @@ It can be seen that the number, 125874, and its double, 251748, contain exactly 
 Find the smallest positive integer, x, such that 2x, 3x, 4x, 5x, and 6x, contain the same digits.
 """
 
-def digits_in_int(number):
-    val_str = str(number)
-    vals = list(val_str)
-    values_int = [int(v) for v in vals]
-    values_int.sort()
-    return values_int
+from HelperFunctions import digits_in_int
 
 solved = False
 x = 1

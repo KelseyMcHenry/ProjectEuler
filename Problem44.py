@@ -8,12 +8,8 @@ It can be seen that P4 + P7 = 22 + 70 = 92 = P8. However, their difference, 70 â
 Find the pair of pentagonal numbers, Pj and Pk, for which their sum and difference are pentagonal and D = |Pk âˆ’ Pj| is minimised; what is the value of D?
 """
 
-from math import sqrt
 from itertools import product
-
-
-def is_pentagonal(number):
-    return ((1 + sqrt(1 + (4 * 3 * 2 * number))) / 6) % 1 == 0
+from HelperFunctions import is_pentagonal
 
 
 def main():

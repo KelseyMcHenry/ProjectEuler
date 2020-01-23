@@ -6,18 +6,6 @@ Find the sum of all numbers, less than one million, which are palindromic in bas
 (Please note that the palindromic number, in either base, may not include leading zeros.)
 """
 
-
-def binary(number):
-    print(number)
-    binary_string = ''
-    while number // 2 > 0:
-        binary_string = str(number % 2) + binary_string
-        number //= 2
-        print(number)
-    binary_string = str(number % 2) + binary_string
-    return binary_string
-
-
 palindromic = list()
 for i in range(1, 1000000):
     string_i = str(i)

@@ -9,13 +9,7 @@ It can be verified that T285 = P165 = H143 = 40755.
 Find the next triangle number that is also pentagonal and hexagonal.
 """
 
-from math import sqrt
-from Problem44 import is_pentagonal
-from Problem42 import is_triangle_number
-
-
-def is_hexagonal(number):
-    return ((1 + sqrt(1 + 8 * number)) / 4) % 1 == 0
+from HelperFunctions import is_pentagonal, is_triangle_number
 
 
 index = 0

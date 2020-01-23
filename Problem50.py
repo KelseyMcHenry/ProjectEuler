@@ -9,7 +9,7 @@ The longest sum of consecutive primes below one-thousand that adds to a prime, c
 Which prime, below one-million, can be written as the sum of the most consecutive primes?
 """
 
-from Problem7 import is_prime
+from HelperFunctions import is_prime
 
 primes = [i for i in range(2, 1000000) if is_prime(i)]
 print(primes)

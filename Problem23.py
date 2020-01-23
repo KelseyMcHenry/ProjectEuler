@@ -12,13 +12,8 @@ known that the greatest number that cannot be expressed as the sum of two abunda
 Find the sum of all the positive integers which cannot be written as the sum of two abundant numbers.
 """
 
-from Problem21 import d
+from HelperFunctions import is_abundant
 from itertools import product
-
-
-def is_abundant(number):
-    return d(number) > number
-
 
 subset_abundant_numbers = [i for i in range(1, 28124) if is_abundant(i)]
 

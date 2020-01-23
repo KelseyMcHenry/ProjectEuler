@@ -6,16 +6,8 @@ If p is the perimeter of a right angle triangle with integral length sides, {a,b
 For which value of p ≤ 1000, is the number of solutions maximised?
 """
 
-from math import sqrt
 
-def find_right_angle_triangle_lengths(number):
-    solutions = list()
-    upper_limit = (number // 2) + 1
-    for a in range(1, upper_limit):
-        for b in range(1, upper_limit):
-            if a + b < number and a + b + sqrt(a**2 + b**2) == number:
-                solutions.append((a, b, sqrt(a**2 + b**2)))
-    return solutions
+from HelperFunctions import find_right_angle_triangle_lengths
 
 
 max_length = 0

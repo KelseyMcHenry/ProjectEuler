@@ -13,9 +13,8 @@ It turns out that the conjecture was false.
 What is the smallest odd composite that cannot be written as the sum of a prime and twice a square?
 """
 
-from Problem7 import is_prime
-from math import sqrt
-from math import ceil
+from HelperFunctions import is_prime
+from math import sqrt, ceil
 from itertools import product
 
 
@@ -34,7 +33,7 @@ for i in range(1, 1000000):
     print(odd_composite)
     odd_composite = next_odd_composite_number(odd_composite)
     primes = [i for i in range(1, odd_composite) if is_prime(i)]
-    twice_squares = [2 * (i ** 2) for i in range(1, ceil(sqrt(odd_composite / 2)))]
+    twice_squares = [2 * (i ** 2) for i in range(1, int(ceil(sqrt(odd_composite / 2))))]
     sum_candidates = product(primes, twice_squares)
     sums = [s for s in sum_candidates if s[0] + s[1] == odd_composite]
     if len(sums) == 0:

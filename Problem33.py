@@ -8,15 +8,7 @@ There are exactly four non-trivial examples of this type of fraction, less than 
 If the product of these four fractions is given in its lowest common terms, find the value of the denominator.
 """
 
-
-def fraction_in_lowest_common_terms(numerator, denominator):
-    for i in range(max(numerator, denominator), 1, -1):
-        if denominator % i == 0 and numerator % i == 0:
-            numerator /= i
-            denominator /= i
-
-    return int(numerator), int(denominator)
-
+from HelperFunctions import fraction_in_lowest_common_terms
 
 fractions = list()
 

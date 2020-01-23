@@ -16,18 +16,7 @@ Find the value of d < 1000 for which 1/d contains the longest recurring cycle in
 """
 
 
-def recurring_cycle_length(number):
-    # checks 10000 digits out, using integer division so no floating point rounding issues come up.
-    unit_fraction = str(1*(10 ** 10000) // number)
-    max_repetitions = 0
-    cycle_length = 0
-    for i in range(1, len(unit_fraction)):
-        count = unit_fraction.count(unit_fraction[0:-i])
-        if count > max_repetitions and count > 1:
-            if unit_fraction[unit_fraction.index(unit_fraction[0:-i]) + len(unit_fraction[0:-i]): unit_fraction.index(unit_fraction[0:-i]) + 2 * len(unit_fraction[0:-i])] == unit_fraction[0:-i]:
-                max_repetitions = count
-                cycle_length = len(unit_fraction) - i
-    return cycle_length
+from HelperFunctions import recurring_cycle_length
 
 
 max_len = 0

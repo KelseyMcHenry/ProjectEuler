@@ -10,7 +10,7 @@ If the word value is a triangle number then we shall call the word a triangle wo
 Using words.txt (right click and 'Save Link/Target As...'), a 16K text file containing nearly two-thousand common English words, how many are triangle words?
 """
 
-from math import sqrt
+from HelperFunctions import is_triangle_number
 
 
 def word_score(word):
@@ -19,13 +19,6 @@ def word_score(word):
         score += (ord(letter) - 64)
     return score
 
-
-def is_triangle_number(number):
-    try:
-        value = (1 + sqrt(1 + 4 * (2 * number))) / 2
-        return value % 1 == 0
-    except ValueError:
-        return False
 
 def main():
     with open("p042_words.txt", "r") as words:

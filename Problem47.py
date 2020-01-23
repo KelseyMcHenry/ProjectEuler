@@ -13,7 +13,7 @@ The first three consecutive numbers to have three distinct prime factors are:
 Find the first four consecutive integers to have four distinct prime factors each. What is the first of these numbers?
 """
 
-from Problem3 import prime_factorization
+from HelperFunctions import prime_factorization
 
 start_num = 130000
 done = False

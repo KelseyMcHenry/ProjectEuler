@@ -8,17 +8,7 @@ Find the sum of all products whose multiplicand/multiplier/product identity can 
 HINT: Some products can be obtained in more than one way so be sure to only include it once in your sum.
 """
 
-
-def is_pandigital_triplet(a, b, c):
-    concat = str(a) + str(b) + str(c)
-    if len(concat) != 9:
-        return False
-    for i in range(1, 10):
-        if concat.count(str(i)) != 1:
-            return False
-    # print((a, b, c))
-    return True
-
+from HelperFunctions import is_pandigital_triplet
 
 # 4 digit limit because 1 * (some 4 digit number) = (4 digit number); 4 + 4 + 1 = 9
 products = set([i*j for i in range(9999) for j in range(9999) if is_pandigital_triplet(i, j, i * j)])
