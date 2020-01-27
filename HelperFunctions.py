@@ -164,7 +164,8 @@ def is_pandigital_triplet(a, b, c):
     return True
 
 
-# given a numerator and denominator of a fraction, returns a tuple containing the numerator and denominator of the fraction in lowest common terms
+# given a numerator and denominator of a fraction, returns a tuple containing the
+# numerator and denominator of the fraction in lowest common terms
 def fraction_in_lowest_common_terms(numerator, denominator):
     for i in range(max(numerator, denominator), 1, -1):
         if denominator % i == 0 and numerator % i == 0:
@@ -262,3 +263,53 @@ def flip_number(n):
 
 def is_palindromic(n):
     return n == flip_number(n)
+
+
+def square_spiral(side_length, direction='clockwise'):
+    if side_length % 2 == 0:
+        raise ValueError('side_length must be odd')
+
+    # (Right, Down, Left, Up, Right)
+    unmapped_movements = [(1, i - 2, i - 1, i - 1, i - 1) for i in range(3, side_length + 2, 2)]
+    mapped_movements = list()
+
+    if direction == 'counterclockwise':
+        for move in unmapped_movements:
+            mapped_movements.append((0, move[0]))
+            mapped_movements.append((-1 * move[1], 0))
+            mapped_movements.append((0, -1 * move[2]))
+            mapped_movements.append((move[3], 0))
+            mapped_movements.append((0, move[4]))
+    elif direction == 'clockwise':
+        for move in unmapped_movements:
+            mapped_movements.append((0, move[0]))
+            mapped_movements.append((move[1], 0))
+            mapped_movements.append((0, -1 * move[2]))
+            mapped_movements.append((-1 * move[3], 0))
+            mapped_movements.append((0, move[4]))
+    else:
+        raise Exception('not a direction')
+
+    matrix = []
+    for _ in range(0, side_length):
+        matrix.append([0] * side_length)
+
+    cursor = ((side_length // 2), (side_length // 2))
+    current_value = 1
+    matrix[cursor[0]][cursor[1]] = current_value
+    current_value += 1
+    for move in mapped_movements:
+        if move[0] == 0:
+            direction_magnitude = move[1]
+            adding_index = 1
+        else:
+            direction_magnitude = move[0]
+            adding_index = 0
+        for _ in range(0, abs(direction_magnitude)):
+            direction = [0, 0]
+            direction[adding_index] = 1 * direction_magnitude // abs(direction_magnitude)
+            cursor = tuple([sum(x) for x in zip(cursor, tuple(direction))])
+            matrix[cursor[0]][cursor[1]] = current_value
+            current_value += 1
+
+    return matrix
