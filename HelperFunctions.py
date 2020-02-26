@@ -1,11 +1,17 @@
 import math
 from math import factorial, sqrt
-
+import operator as op
+from functools import reduce
+import functools
 
 letters_in_english = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine',
                       10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen', 14: 'fourteen', 15: 'fifteen', 16: 'sixteen',
                       17: 'seventeen', 18: 'eighteen', 19: 'nineteen', 20: 'twenty', 30: 'thirty', 40: 'forty', 50: 'fifty',
                       60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'hundred', 1000: 'thousand'}
+
+
+def primes_under_x(x):
+    return [i for i in range(x) if is_prime(i)]
 
 
 # returns a list containing all the digits in the prime factorization of number
@@ -42,6 +48,7 @@ def prime_factors_counts(number):
 
 
 # returns True or False if num is prime or not
+@functools.lru_cache(maxsize=None)
 def is_prime(num):
     num = abs(num)
     if num == 1:
@@ -313,3 +320,57 @@ def square_spiral(side_length, direction='clockwise'):
             current_value += 1
 
     return matrix
+
+
+def ncr(n, r):
+    r = min(r, n-r)
+    numer = reduce(op.mul, range(n, n-r, -1), 1)
+    denom = reduce(op.mul, range(1, r+1), 1)
+    return numer / denom
+
+
+def homebrew_combinations_to_file(list_to_choose_from, combo_size, file_handle):
+    total = ncr(len(list_to_choose_from), combo_size)
+    count_processed = 0
+    if len(list_to_choose_from) < combo_size:
+        raise ValueError('list length must be greater than or equal to the combo size')
+    indices = list(range(0, combo_size))
+    while indices != reversed(list(range(len(list_to_choose_from) - 1, len(list_to_choose_from) - combo_size, -1))):
+        combo = []
+        for index in indices:
+            combo.append(list_to_choose_from[index])
+        file_handle.write(str(combo) + '\n')
+        count_processed += 1
+        print(f'{count_processed}/{total} = {count_processed * 100 / total}%')
+        try:
+            increment_indices(indices, -1, len(list_to_choose_from) - 1)
+        except ValueError:
+            return
+
+
+def increment_indices(indices, position, rollover_value):
+    # try to simply add 1 to the current value
+    try:
+        number_to_use = indices[position] + 1
+    except IndexError:
+        # if position goes out of bounds, we are at the maximum
+        raise ValueError('Indices is at its max value, can no longer increment')
+    # if trying to add one causes it to rollover, we need to increment the next position, and once it is done, we need to come back to this position
+    if number_to_use == rollover_value + 1 + (position + 1):
+        number_to_use = 0
+        indices[position] = number_to_use
+        increment_indices(indices, position - 1, rollover_value)
+    # if we are on the most significant digit, we dont have to worry about it being less than anything.
+    if len(indices) == abs(position):
+        while number_to_use in indices:
+            number_to_use += 1
+    else:
+        while number_to_use in indices or number_to_use <= indices[position - 1]:
+            number_to_use += 1
+
+    indices[position] = number_to_use
+
+
+@functools.lru_cache(maxsize=None)
+def concatenate_numbers(pair):
+    return int(str(pair[0]) + str(pair[1]))
