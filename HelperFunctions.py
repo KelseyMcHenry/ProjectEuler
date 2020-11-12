@@ -11,24 +11,40 @@ letters_in_english = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: '
 
 
 def fibonacci_generator(n=None):
+    """
+    Returns a fibonacci number generator
+    :param n: if provided, the generator will stop at the nth fibonacci number, otherwise it will continue indefinitely.
+    :return: generator
+    """
     a, b = 0, 1
     if n is None:
+        # infinite mode
         while True:
             yield a
             a, b = b, a + b
     else:
+        # finite mode
         for _ in range(n):
             yield a
             a, b = b, a + b
 
 
 def is_palindromic(number):
+    """
+    Returns if the number provided is the same forward as backwards
+    """
     return str(number)[::-1] == str(number)
 
 
 def prime_generator(n=None):
+    """
+    Returns a prime number generator
+    :param n: if provided, the generator will stop at the nth prime number, otherwise it will continue indefinitely.
+    :return: generator
+    """
     x = 2
     if n is None:
+        # infinite mode
         while True:
             if is_prime(x):
                 yield x
@@ -36,6 +52,7 @@ def prime_generator(n=None):
             else:
                 x += 1
     else:
+        # finite mode
         for _ in range(n):
             while not is_prime(x):
                 x += 1
@@ -44,23 +61,37 @@ def prime_generator(n=None):
 
 
 def primes_under_x(x):
+    """
+    Returns a list of all prime numbers with a value less than the number provided
+    """
+    # start at 3 and skip all even numbers, adding the rest to the list
     primes_list = [i for i in range(3, x, 2) if is_prime(i)]
+    # add 2 since it is prime but the even number count skips it
     primes_list.append(2)
     return primes_list
 
 
-# returns a list containing all the digits in the prime factorization of number
 def prime_factorization(number):
+    """
+    returns a list containing all the digits in the prime factorization of number
+
+    :param number:
+    :return:
+    """
     running_amt = number
     prime_factors = []
 
+    # start checking factors at 2 since everything is divisible by 1
     i = 2
-    while i < number:
+    # check all factors up to the number itself, since all numbers are divisible by themselves, it will terminate there in the case that it is prime.
+    while i <= number:
         while running_amt % i == 0:
+            # if the number you are checking is a factor, add it to the list and divide the current number by that value.
             running_amt /= i
             prime_factors.append(i)
             if running_amt == 1:
                 break
+            # restart the counting again, there can be multiple instances of a factor during prime factorization.
             i = 2
         if running_amt == 1:
             break
@@ -69,56 +100,86 @@ def prime_factorization(number):
     return prime_factors
 
 
-# returns dict with all the individual digits in the prime factorization and their counts
 def prime_factors_counts(number):
-    factors = []
-    running_amt = number
-
-    for i in range(2, number):
-        while running_amt % i == 0:
-            running_amt /= i
-            factors.append(i)
-            if running_amt == 1:
-                return {i: factors.count(i) for i in factors}
-
-    return {number: 1}
+    """
+    returns dict with all the individual digits in the prime factorization and their counts
+    """
+    factors = prime_factorization(number)
+    return {i: factors.count(i) for i in factors}
 
 
-# returns True or False if num is prime or not
 @functools.lru_cache(maxsize=None)
 def is_prime(num):
+    """
+    returns True or False if num is prime or not
+    :param num:
+    :return:
+    """
+    # account for negative input
     num = abs(num)
+    # 1 and 2 are special cases
     if num == 1:
         return False
     if num == 2:
         return True
+    # throw out odd numbers
     if num % 2 == 0:
         return False
+    # starting at 3 and checking every odd number up to the sqrt of the number, check if it has any factors.
     for i in range(3, int(math.ceil(math.sqrt(num)) + 1), 2):
         if num % i == 0:
             return False
     return True
 
 
-# returns a list of numbers that divide evenly into num
-def divisors(num):
-    if num == 1:
+def product_of_list(input_list):
+    """
+    Returns the product of a list of numbers
+    """
+    result = 1
+    for number in input_list:
+        result *= number
+    return result
+
+
+def triangle_number_generator(n=None):
+    """
+    Returns a prime number generator
+    :param n: if provided, the generator will stop at the nth prime number, otherwise it will continue indefinitely.
+    :return: generator
+    """
+    # FORMULA FOR TRIANGULAR NUMBER = n(n+1)/2
+    i = 1
+    if n is None:
+        # infinite mode
+        while True:
+            yield i * (i + 1) / 2
+            i += 1
+    else:
+        # finite mode
+        while i <= n:
+            yield i * (i + 1) / 2
+            i += 1
+
+
+def divisors(number):
+    """
+    returns a list of numbers that divide evenly into num
+    """
+    if number == 1:
         return [1]
     divisor_list = list()
-    for i in range(1, int(math.ceil(math.sqrt(num)) + 1)):
-        if num % i == 0:
+    for i in range(1, int(math.ceil(math.sqrt(number)) + 1)):
+        if number % i == 0:
             divisor_list.append(i)
-            divisor_list.append(int(num / i))
+            divisor_list.append(int(number / i))
     return list(set(divisor_list))
 
 
-# returns the nth triangle number
-def nth_triangle_number(index):
-    return sum(range(1, index+1))
-
-
-# returns the length of the collatz chain for the given number
 def collatz_chain_length(number):
+    """
+    returns the length of the collatz chain for the given number
+    """
     count = 0
     while number != 1:
         if number % 2 == 0:
