@@ -44,7 +44,9 @@ def prime_generator(n=None):
 
 
 def primes_under_x(x):
-    return [i for i in range(x) if is_prime(i)]
+    primes_list = [i for i in range(3, x, 2) if is_prime(i)]
+    primes_list.append(2)
+    return primes_list
 
 
 # returns a list containing all the digits in the prime factorization of number
