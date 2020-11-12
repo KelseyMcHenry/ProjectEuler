@@ -240,6 +240,10 @@ def is_triangle_number(number):
         return False
 
 
+def is_square(number):
+    return sqrt(number) % 1.0 == 0
+
+
 # given a number returns a boolean if it is a pentagonal number
 def is_pentagonal(number):
     return ((1 + sqrt(1 + (4 * 3 * 2 * number))) / 6) % 1 == 0
@@ -250,12 +254,27 @@ def is_hexagonal(number):
     return ((1 + sqrt(1 + 8 * number)) / 4) % 1 == 0
 
 
-# given an integer, returns a list containing all the digits
+def is_heptagonal(number):
+    return ((3 + sqrt(9 + 4 * 5 * 2 * number)) / 10) % 1 == 0
+
+
+def is_octagonal(number):
+    return ((2 + sqrt(4 + 4 * 3 * number)) / 6) % 1 == 0
+
+# given an integer, returns a sorted list containing all the digits
 def digits_in_int(number):
     val_str = str(number)
     vals = list(val_str)
     values_int = [int(v) for v in vals]
     values_int.sort()
+    return values_int
+
+
+# given an integer, returns an unsorted list containing all the digits
+def digits_in_int_unsorted(number):
+    val_str = str(number)
+    vals = list(val_str)
+    values_int = [int(v) for v in vals]
     return values_int
 
 
@@ -374,3 +393,31 @@ def increment_indices(indices, position, rollover_value):
 @functools.lru_cache(maxsize=None)
 def concatenate_numbers(pair):
     return int(str(pair[0]) + str(pair[1]))
+
+
+def is_cyclic_4dig(num_set):
+    end_numbers = [number % 100 for number in num_set]
+    if any([number < 10 for number in end_numbers]):
+        return False
+    for number in num_set:
+        if number // 100 not in end_numbers:
+            return False
+    for i in range(len(num_set) - 1):
+        if num_set[i] % 100 != num_set[i + 1] // 100:
+            return False
+    # check that the last digit wraps around to the first digit
+    print(num_set)
+    if num_set[-1] % 100 != num_set[0] // 100:
+        return False
+    return True
+
+
+def polygonal_number_generator(s):
+    num = 1
+    while True:
+        yield int(((s-2)*(num ** 2) - (s - 4)*(num)) / 2)
+        num += 1
+
+
+def cube_root(x):
+    return x**(1./3.)
