@@ -6,7 +6,10 @@ problems_and_solutions = {
     problem_1: 233168,
     problem_2: 4613732,
     problem_3: 6857,
-    problem_4: 906609
+    problem_4: 906609,
+    problem_5: 232792560,
+    problem_6: 25164150,
+    problem_7: 104743
 }
 
 class TestProblems(unittest.TestCase):

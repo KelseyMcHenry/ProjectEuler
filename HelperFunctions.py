@@ -10,15 +10,37 @@ letters_in_english = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: '
                       60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'hundred', 1000: 'thousand'}
 
 
-def fibonacci_generator():
+def fibonacci_generator(n=None):
     a, b = 0, 1
-    while True:
-        yield a
-        a, b = b, a + b
+    if n is None:
+        while True:
+            yield a
+            a, b = b, a + b
+    else:
+        for _ in range(n):
+            yield a
+            a, b = b, a + b
 
 
 def is_palindromic(number):
     return str(number)[::-1] == str(number)
+
+
+def prime_generator(n=None):
+    x = 2
+    if n is None:
+        while True:
+            if is_prime(x):
+                yield x
+                x += 1
+            else:
+                x += 1
+    else:
+        for _ in range(n):
+            while not is_prime(x):
+                x += 1
+            yield x
+            x += 1
 
 
 def primes_under_x(x):
