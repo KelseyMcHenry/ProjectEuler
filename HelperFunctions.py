@@ -10,6 +10,17 @@ letters_in_english = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: '
                       60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'hundred', 1000: 'thousand'}
 
 
+def fibonacci_generator():
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+
+def is_palindromic(number):
+    return str(number)[::-1] == str(number)
+
+
 def primes_under_x(x):
     return [i for i in range(x) if is_prime(i)]
 
@@ -19,7 +30,8 @@ def prime_factorization(number):
     running_amt = number
     prime_factors = []
 
-    for i in range(2, number):
+    i = 2
+    while i < number:
         while running_amt % i == 0:
             running_amt /= i
             prime_factors.append(i)
@@ -28,6 +40,7 @@ def prime_factorization(number):
             i = 2
         if running_amt == 1:
             break
+        i += 1
 
     return prime_factors
 
@@ -421,3 +434,22 @@ def polygonal_number_generator(s):
 
 def cube_root(x):
     return x**(1./3.)
+
+
+def is_cube(number):
+    factors = prime_factorization(number)
+    if len(factors) == 0:
+        return False
+    for factor in set(factors):
+        if factors.count(factor) != 3:
+            return False
+    return True
+
+def flatten_number_list(number_list):
+    number_list = list(number_list)
+    number_list.reverse()
+    value = 0
+    for i in range(0, len(number_list)):
+        value += (10 ** i) * number_list[i]
+    return value
+
