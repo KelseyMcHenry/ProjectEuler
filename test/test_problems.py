@@ -33,14 +33,19 @@ problems_and_solutions = {
     problem_28: 669171001,
     problem_29: 9183,
     problem_30: 443839,
-    problem_31: 73682
+    problem_31: 73682,
+    problem_32: 45228,
+    problem_33: 100,
+    problem_34: 40730,
+    problem_35: 55,
+    problem_36: 872187
 }
 
 
 class TestProblems(unittest.TestCase):
 
     def test_all_problems(self):
-        start = 31
+        start = 33
         for func, solution in problems_and_solutions.items():
             if int(func.__name__[8:]) < start:
                 continue
@@ -48,6 +53,6 @@ class TestProblems(unittest.TestCase):
             answer = func()
             tock = time.perf_counter()
             print(f'Solution for {func.__name__}: {answer} in {tock - tick:.2f} sec')
-            self.assertEqual(answer, solution)
+            self.assertEqual(solution, answer)
             self.assertLess(tock - tick, 60)
         time.sleep(1)

@@ -270,8 +270,10 @@ def recurring_cycle_length(number):
     return cycle_length
 
 
-# returns a boolean if a triplet of numbers contains only 1 instance of each digit across all 3 numbers
 def is_pandigital_triplet(a, b, c):
+    """
+    returns a boolean if a triplet of numbers contains only 1 instance of each digit across all 3 numbers
+    """
     concat = str(a) + str(b) + str(c)
     if len(concat) != 9:
         return False
@@ -282,9 +284,11 @@ def is_pandigital_triplet(a, b, c):
     return True
 
 
-# given a numerator and denominator of a fraction, returns a tuple containing the
-# numerator and denominator of the fraction in lowest common terms
 def fraction_in_lowest_common_terms(numerator, denominator):
+    """
+    # given a numerator and denominator of a fraction, returns a tuple containing the
+    # numerator and denominator of the fraction in lowest common terms
+    """
     for i in range(max(numerator, denominator), 1, -1):
         if denominator % i == 0 and numerator % i == 0:
             numerator /= i
@@ -293,18 +297,21 @@ def fraction_in_lowest_common_terms(numerator, denominator):
     return int(numerator), int(denominator)
 
 
-# retuns the sum of all digits of the factorial of a number
 def sum_of_factorial_of_digits(number):
+    """
+    retuns the sum of all digits of the factorial of a number
+    """
     running_sum = 0
-    for i in [int(digit) for digit in str(number)]:
+    for i in digits_in_int_unsorted(number):
         running_sum += factorial(i)
     return running_sum
 
 
-# given a number, returns a list of all of the "rotations" of a number, ie for 123 -> 123, 231, 312
 def get_rotations(number):
-    results = []
-    results.append()
+    """
+    given a number, returns a list of all of the "rotations" of a number, ie for 123 -> 123, 231, 312
+    """
+    results = [number]
     digits = [int(digit) for digit in str(number)]
     for _ in range(1, len(str(number))):
         temp = digits.pop()

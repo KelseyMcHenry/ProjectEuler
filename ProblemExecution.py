@@ -969,3 +969,127 @@ def problem_31(goal_total=200, coin_type_index=0, coin_types=(200, 100, 50, 20, 
                 number_of_ways += problem_31(goal_total - (i * coin_types[coin_type_index]), coin_type_index=coin_type_index + 1)
 
     return number_of_ways
+
+
+def problem_32():
+    """
+    We shall say that an n-digit number is pandigital if it makes use of all the digits 1 to n exactly once; for example, the 5-digit number, 15234, is 1 through 5 pandigital.
+
+    The product 7254 is unusual, as the identity, 39 × 186 = 7254, containing multiplicand, multiplier, and product is 1 through 9 pandigital.
+
+    Find the sum of all products whose multiplicand/multiplier/product identity can be written as a 1 through 9 pandigital.
+
+    HINT: Some products can be obtained in more than one way so be sure to only include it once in your sum.
+    """
+
+    # 4 digit limit because 1 (the smallest 1 digit number) * (some 4 digit number) = (4 digit number); 4 + 4 + 1 = 9
+    digit_pairs = []
+    for i in range(9999):
+        for j in range(9999):
+            if is_pandigital_triplet(i, j, i * j):
+                # has to be made into tuples to be hashable (aka in order to be entered into a set) and has to be sorted
+                # so duplicates are properly detected.
+                entry = tuple(sorted((i, j)))
+                if entry not in digit_pairs:
+                    digit_pairs.append(tuple(sorted((i, j))))
+                else:
+                    # as soon as we get a duplicate pair of multipicand / multipiers we know we have reached the point
+                    # where a * b transitions over to b * a, so we can stop.
+                    products = {item[0] * item[1] for item in digit_pairs}
+                    return sum(products)
+
+
+def problem_33():
+    """
+    The fraction 49/98 is a curious fraction, as an inexperienced mathematician in attempting to simplify it may incorrectly believe that 49/98 = 4/8, which is correct, is obtained by cancelling the 9s.
+
+    We shall consider fractions like, 30/50 = 3/5, to be trivial examples.
+
+    There are exactly four non-trivial examples of this type of fraction, less than one in value, and containing two digits in the numerator and denominator.
+
+    If the product of these four fractions is given in its lowest common terms, find the value of the denominator.
+    """
+    fractions = list()
+
+    for i in range(10, 100):
+        for j in range(10, 100):
+            if i < j:
+                digits_in_i = [int(digit) for digit in str(i)]
+                digits_in_j = [int(digit) for digit in str(j)]
+                for digit in digits_in_i:
+                    if digit in digits_in_j and i != j and digit != 0:
+                        digits_in_i.remove(digit)
+                        reconstructed_i = digits_in_i[0]
+                        digits_in_j.remove(digit)
+                        reconstructed_j = digits_in_j[0]
+                        if j != 0 and reconstructed_j != 0:
+                            if i / j == reconstructed_i / reconstructed_j:
+                                fractions.append((i, j))
+
+    fractions_lct = list()
+
+    for fraction in fractions:
+        fractions_lct.append(fraction_in_lowest_common_terms(fraction[0], fraction[1]))
+
+    numerator_product = 1
+    denominator_product = 1
+    for fraction in fractions_lct:
+        numerator_product *= fraction[0]
+        denominator_product *= fraction[1]
+
+    return fraction_in_lowest_common_terms(numerator_product, denominator_product)[1]
+
+
+def problem_34():
+    """
+    145 is a curious number, as 1! + 4! + 5! = 1 + 24 + 120 = 145.
+
+    Find the sum of all numbers which are equal to the sum of the factorial of their digits.
+
+    Note: as 1! = 1 and 2! = 2 are not sums they are not included.
+    """
+
+    return sum([i for i in range(10, 999999) if sum_of_factorial_of_digits(i) == i])
+
+
+def problem_35():
+    """
+    The number, 197, is called a circular prime because all rotations of the digits: 197, 971, and 719, are themselves prime.
+
+    There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, and 97.
+
+    How many circular primes are there below one million?
+    """
+
+    circular_primes = list()
+
+    for i in range(1, 1000000):
+        rotations = get_rotations(i)
+        is_circular_prime = True
+        for rotation in rotations:
+            if not is_prime(rotation):
+                is_circular_prime = False
+                break
+        if is_circular_prime:
+            circular_primes.append(i)
+
+    return len(circular_primes)
+
+
+def problem_36():
+    """
+    The decimal number, 585 = 1001001001 (binary), is palindromic in both bases.
+
+    Find the sum of all numbers, less than one million, which are palindromic in base 10 and base 2.
+
+    (Please note that the palindromic number, in either base, may not include leading zeros.)
+    """
+
+    palindromic = list()
+    for i in range(1, 1000000):
+        string_i = str(i)
+        binary_string = bin(i)[2:]
+        if string_i == string_i[::-1] and binary_string == binary_string[::-1]:
+            palindromic.append(i)
+
+    return sum(palindromic)
