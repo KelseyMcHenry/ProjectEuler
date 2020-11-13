@@ -939,7 +939,7 @@ def problem_30():
     return sum([i for i in range(354294) if sum([int(i) ** 5 for i in str(i)]) == i and i != 1])
 
 
-def problem_31(goal_total=200, coin_type=200):
+def problem_31(goal_total=200, coin_type_index=0, coin_types=(200, 100, 50, 20, 10, 5, 2, 1)):
     """
     In England the currency is made up of pound, £, and pence, p, and there are eight coins in general circulation:
 
@@ -950,20 +950,22 @@ def problem_31(goal_total=200, coin_type=200):
     How many different ways can £2 be made using any number of coins?
     """
 
-    coin_types = [200, 100, 50, 20, 10, 5, 2, 1]
+    # This is configurable for any goal amount and any denomination set by updating the goal_total and
+    # passing in your own coin types tuple (sorted highest to lowest)
+
     number_of_ways = 0
 
-    print_string = ''
-    for x in range(coin_types.index(coin_type)):
-        print_string = print_string + '\t'
-
-    for i in range((goal_total // coin_type) + 1):
-        if i * coin_type == goal_total:
+    # this loop makes it so that we do not consider combinations where the total will exceed the goal total.
+    # general idea: the amount of ways you can make 100 with 100 piece coins is the amount of ways you can make 100
+    # with 0 100 piece coins (and any combination of lower coints) plus the number of ways you can make 100 with
+    # 1 100 piece coin, etc etc.
+    #
+    # the termination state is the last place in the coin_types list.
+    for i in range((goal_total // coin_types[coin_type_index]) + 1):
+        if i * coin_types[coin_type_index] == goal_total:
             number_of_ways += 1
-            print_string = print_string + f'{i} {coin_type} coins to make {goal_total}'
         else:
-            if coin_type != 1:
-                print_string = f'{i} {coin_type} coins to make {goal_total}'
-                number_of_ways += recursive_coin_combos(goal_total - (i * coin_type), coin_type=coin_types[coin_types.index(coin_type) + 1])
+            if coin_types[coin_type_index] != coin_types[-1]:
+                number_of_ways += problem_31(goal_total - (i * coin_types[coin_type_index]), coin_type_index=coin_type_index + 1)
 
     return number_of_ways
