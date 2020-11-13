@@ -325,16 +325,18 @@ def get_rotations(number):
     return results
 
 
-# for a decimal number input return a string representation of the number in binary
-def dec_to_binary(number):
-    print(number)
-    binary_string = ''
-    while number // 2 > 0:
-        binary_string = str(number % 2) + binary_string
-        number //= 2
-        print(number)
-    binary_string = str(number % 2) + binary_string
-    return binary_string
+def is_truncatable_prime(number):
+    """
+    given a number, returns a boolean saying if it is a truncatable prime from left to right and right to left.
+    (Being prime itself, it is possible to continuously remove digits from
+    left to right, and remain prime at each stage: 3797, 797, 97, and 7.
+    Similarly we can work from right to left: 3797, 379, 37, and 3.)
+    """
+    if number in [2, 3, 5, 7]:
+        return False
+    slicesLR = [int(str(number)[i:]) for i in range(0, len(str(number)))]
+    slicesRL = [int(str(number)[:i]) for i in range(1, len(str(number)) + 1)]
+    return all([is_prime(slice) for slice in slicesLR]) and all([is_prime(slice) for slice in slicesRL])
 
 
 # given the perimeter of a right angle triangle, returns a list of tuples containing

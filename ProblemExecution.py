@@ -1009,6 +1009,7 @@ def problem_33():
 
     If the product of these four fractions is given in its lowest common terms, find the value of the denominator.
     """
+
     fractions = list()
 
     for i in range(10, 100):
@@ -1093,3 +1094,41 @@ def problem_36():
             palindromic.append(i)
 
     return sum(palindromic)
+
+
+def problem_37():
+    """
+    The number 3797 has an interesting property. Being prime itself, it is possible to continuously remove digits from
+    left to right, and remain prime at each stage: 3797, 797, 97, and 7.
+    Similarly we can work from right to left: 3797, 379, 37, and 3.
+
+    Find the sum of the only eleven primes that are both truncatable from left to right and right to left.
+
+    NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.
+    """
+
+    truncatable_primes = list()
+    prime_gen = prime_generator()
+    number = next(prime_gen)
+    while len(truncatable_primes) < 11:
+        if is_truncatable_prime(number):
+            truncatable_primes.append(number)
+        number = next(prime_gen)
+
+    return sum(truncatable_primes)
+
+
+def problem_38():
+    """
+    Take the number 192 and multiply it by each of 1, 2, and 3:
+
+    192 × 1 = 192
+    192 × 2 = 384
+    192 × 3 = 576
+    By concatenating each product we get the 1 to 9 pandigital, 192384576. We will call 192384576 the concatenated product of 192 and (1,2,3)
+
+    The same can be achieved by starting with 9 and multiplying by 1, 2, 3, 4, and 5, giving the pandigital, 918273645, which is the concatenated product of 9 and (1,2,3,4,5).
+
+    What is the largest 1 to 9 pandigital 9-digit number that can be formed as the concatenated product of an integer with (1,2, ... , n) where n > 1?
+    """
+
