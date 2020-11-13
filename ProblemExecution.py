@@ -1,6 +1,9 @@
 from HelperFunctions import *
 from functools import reduce
 from math import sqrt
+from datetime import date
+from datetime import timedelta
+from itertools import product
 
 
 def problem_1():
@@ -535,3 +538,208 @@ def problem_14():
             winner = i
 
     return winner
+
+
+def problem_15():
+    """
+    Starting in the top left corner of a 2×2 grid, and only being able to move to the right and down, there are exactly 6 routes to the bottom right corner.
+
+    How many such routes are there through a 20×20 grid?
+    """
+    """
+    formula for all possible permutations
+    P(n,r)=n!/(n−r)!
+    (n-r)! = 1 when n = r, simplified here
+    divided by all possible permutations of the set of 20 rights and 20 downs to account for repetitions
+    """
+
+    return int(factorial(40) / (factorial(20) * factorial(20)))
+
+
+def problem_16():
+    """
+    2^15 = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
+
+    What is the sum of the digits of the number 2^1000?
+    """
+
+    return sum(digits_in_int_unsorted(2 ** 1000))
+
+
+def problem_17():
+    """
+    If the numbers 1 to 5 are written out in words: one, two, three, four, five, then there are 3 + 3 + 5 + 4 + 4 = 19 letters used in total.
+
+    If all the numbers from 1 to 1000 (one thousand) inclusive were written out in words, how many letters would be used?
+
+
+    NOTE: Do not count spaces or hyphens. For example, 342 (three hundred and forty-two) contains 23 letters and 115 (one hundred and fifteen) contains 20 letters. The use of "and" when writing out numbers is in compliance with British usage.
+    """
+
+    answer = 0
+    for i in range(1, 1001):
+        answer += num_letters_in_number(i)
+
+    return answer
+
+
+def problem_18():
+    """
+    By starting at the top of the triangle below and moving to adjacent numbers on the row below, the maximum total from top to bottom is 23.
+
+    3
+    7 4
+    2 4 6
+    8 5 9 3
+
+    That is, 3 + 7 + 4 + 9 = 23.
+
+    Find the maximum total from top to bottom of the triangle below:
+
+    75
+    95 64
+    17 47 82
+    18 35 87 10
+    20 04 82 47 65
+    19 01 23 75 03 34
+    88 02 77 73 07 63 67
+    99 65 04 28 06 16 70 92
+    41 41 26 56 83 40 80 70 33
+    41 48 72 33 47 32 37 16 94 29
+    53 71 44 65 25 43 91 52 97 51 14
+    70 11 33 28 77 73 17 78 39 68 17 57
+    91 71 52 38 17 14 91 43 58 50 27 29 48
+    63 66 04 68 89 53 67 30 73 16 69 87 40 31
+    04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
+
+    NOTE: As there are only 16384 routes, it is possible to solve this problem by trying every route. However, Problem 67, is the same challenge with a triangle containing one-hundred rows; it cannot be solved by brute force, and requires a clever method! ;o)
+    """
+
+    triangle = [
+        [75],
+        [95, 64],
+        [17, 47, 82],
+        [18, 35, 87, 10],
+        [20, 4, 82, 47, 65],
+        [19, 1, 23, 75, 3, 34],
+        [88, 2, 77, 73, 7, 63, 67],
+        [99, 65, 4, 28, 6, 16, 70, 92],
+        [41, 41, 26, 56, 83, 40, 80, 70, 33],
+        [41, 48, 72, 33, 47, 32, 37, 16, 94, 29],
+        [53, 71, 44, 65, 25, 43, 91, 52, 97, 51, 14],
+        [70, 11, 33, 28, 77, 73, 17, 78, 39, 68, 17, 57],
+        [91, 71, 52, 38, 17, 14, 91, 43, 58, 50, 27, 29, 48],
+        [63, 66, 4, 68, 89, 53, 67, 30, 73, 16, 69, 87, 40, 31],
+        [4, 62, 98, 27, 23, 9, 70, 98, 73, 93, 38, 53, 60, 4, 23]
+    ]
+
+    for i in range(len(triangle) - 2, -1, -1):
+        for j in range(len(triangle[i])):
+            triangle[i][j] += max((triangle[i + 1][j], triangle[i + 1][j + 1]))
+
+    return triangle[0][0]
+
+
+def problem_19():
+    """
+    You are given the following information, but you may prefer to do some research for yourself.
+
+    1 Jan 1900 was a Monday.
+    Thirty days has September,
+    April, June and November.
+    All the rest have thirty-one,
+    Saving February alone,
+    Which has twenty-eight, rain or shine.
+    And on leap years, twenty-nine.
+    A leap year occurs on any year evenly divisible by 4, but not on a century unless it is divisible by 400.
+    How many Sundays fell on the first of the month during the twentieth century (1 Jan 1901 to 31 Dec 2000)?
+    """
+
+    sunday_count = 0
+    start_date = date(1901, 1, 1)
+    while start_date <= date(2000, 12, 31):
+        if start_date.weekday() == 6 and start_date.day == 1:
+            sunday_count += 1
+            # print(f'{start_date.month} / {start_date.day} / {start_date.year} ---- {sunday_count}')
+        start_date += timedelta(days=1)
+
+    return sunday_count
+
+
+def problem_20():
+    """
+    n! means n × (n − 1) × ... × 3 × 2 × 1
+
+    For example, 10! = 10 × 9 × ... × 3 × 2 × 1 = 3628800,
+    and the sum of the digits in the number 10! is 3 + 6 + 2 + 8 + 8 + 0 + 0 = 27.
+
+    Find the sum of the digits in the number 100!
+    """
+
+    number = factorial(100)
+    return sum(digits_in_int_unsorted(number))
+
+
+def problem_21():
+    """
+    Let d(n) be defined as the sum of proper divisors of n (numbers less than n which divide evenly into n).
+    If d(a) = b and d(b) = a, where a ≠ b, then a and b are an amicable pair and each of a and b are called amicable numbers.
+
+    For example, the proper divisors of 220 are 1, 2, 4, 5, 10, 11, 20, 22, 44, 55 and 110; therefore d(220) = 284. The proper divisors of 284 are 1, 2, 4, 71 and 142; so d(284) = 220.
+
+    Evaluate the sum of all the amicable numbers under 10000.
+    """
+
+    return sum([i for i in range(1, 10001) if is_amicable(i)])
+
+
+def problem_22():
+    """
+    Using names.txt (right click and 'Save Link/Target As...'), a 46K text file containing over five-thousand first names, begin by sorting it into alphabetical order. Then working out the alphabetical value for each name, multiply this value by its alphabetical position in the list to obtain a name score.
+
+    For example, when the list is sorted into alphabetical order, COLIN, which is worth 3 + 15 + 12 + 9 + 14 = 53, is the 938th name in the list. So, COLIN would obtain a score of 938 × 53 = 49714.
+
+    What is the total of all the name scores in the file?
+    """
+
+    name_list = []
+    with open("../input_files/p022_names.txt", "r") as names:
+        for line in names:
+            name_list = (line.replace('"', '').split(','))
+            name_list.sort()
+
+    name_score_sum = 0
+    for name in name_list:
+        alpha_score = 0
+        for letter in name:
+            alpha_score += (ord(letter) - 64)
+        name_score_sum += alpha_score * (name_list.index(name) + 1)
+
+    return name_score_sum
+
+def problem_23():
+    """
+    A perfect number is a number for which the sum of its proper divisors is exactly equal to the number. For example, the
+    sum of the proper divisors of 28 would be 1 + 2 + 4 + 7 + 14 = 28, which means that 28 is a perfect number.
+
+    A number n is called deficient if the sum of its proper divisors is less than n and it is called abundant if this sum exceeds n.
+
+    As 12 is the smallest abundant number, 1 + 2 + 3 + 4 + 6 = 16, the smallest number that can be written as the sum of two
+    abundant numbers is 24. By mathematical analysis, it can be shown that all integers greater than 28123 can be written as
+    the sum of two abundant numbers. However, this upper limit cannot be reduced any further by analysis even though it is
+    known that the greatest number that cannot be expressed as the sum of two abundant numbers is less than this limit.
+
+    Find the sum of all the positive integers which cannot be written as the sum of two abundant numbers.
+    """
+
+    subset_abundant_numbers = [i for i in range(1, 28124) if is_abundant(i)]
+
+    pairs_abundant_number_subset = product(subset_abundant_numbers, subset_abundant_numbers)
+
+    can_be_written_as_sum = set([i + j for i, j in pairs_abundant_number_subset if i + j < 28124])
+
+    larger_set = set(range(1, 28124))
+
+    cannot_be_written = larger_set - can_be_written_as_sum
+
+    return sum(cannot_be_written)

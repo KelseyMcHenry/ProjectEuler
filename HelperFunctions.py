@@ -191,8 +191,10 @@ def collatz_chain_length(number):
     return count
 
 
-# for a given int, determines the number of letters in the written form
 def num_letters_in_number(number):
+    """
+    for a given int, determines the number of letters in the written form
+    """
     english = ''
     thousands_digit = number // 1000
     if thousands_digit > 0:
@@ -216,20 +218,26 @@ def num_letters_in_number(number):
         if ones_digit > 0:
             english += letters_in_english[ones_digit]
 
-    print(str(number) + " : " + english)
+    # print(str(number) + " : " + english)
     return len(english.replace(' ', ''))
 
 
-# returns the list of divisors which are less than the input number
 def proper_divisors(number):
+    """
+    returns the list of divisors which are strictly less than the input number
+    """
     divisor_list = divisors(number)
     if len(divisor_list) > 1:
         divisor_list.remove(number)
     return divisor_list
 
 
-# returns a boolean if a number is amicable
 def is_amicable(number):
+    """
+    returns a boolean if a number is amicable
+    (Let d(n) be defined as the sum of proper divisors of n (numbers less than n which divide evenly into n).
+    If d(a) = b and d(b) = a, where a ≠ b, then a and b are an amicable pair and each of a and b are called amicable numbers.)
+    """
     value = sum(proper_divisors(number))
     if sum(proper_divisors(value)) == number and value != number:
         return True
@@ -237,8 +245,11 @@ def is_amicable(number):
         return False
 
 
-# returns if a number is abundant
 def is_abundant(number):
+    """
+    returns if a number is abundant
+    (A number n is called deficient if the sum of its proper divisors is less than n and it is called abundant if this sum exceeds n.)
+    """
     return sum(proper_divisors(number)) > number
 
 

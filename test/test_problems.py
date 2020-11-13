@@ -16,14 +16,26 @@ problems_and_solutions = {
     problem_11: 70600674,
     problem_12: 76576500,
     problem_13: 5537376230,
-    problem_14: 837799
+    problem_14: 837799,
+    problem_15: 137846528820,
+    problem_16: 1366,
+    problem_17: 21124,
+    problem_18: 1074,
+    problem_19: 171,
+    problem_20: 648,
+    problem_21: 31626,
+    problem_22: 871198282,
+    problem_23: 4179871
 }
 
 
 class TestProblems(unittest.TestCase):
 
     def test_all_problems(self):
+        start = 22
         for func, solution in problems_and_solutions.items():
+            if int(func.__name__[8:]) < start:
+                continue
             tick = time.perf_counter()
             answer = func()
             tock = time.perf_counter()
