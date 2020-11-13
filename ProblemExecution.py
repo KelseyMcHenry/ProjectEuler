@@ -3,7 +3,7 @@ from functools import reduce
 from math import sqrt
 from datetime import date
 from datetime import timedelta
-from itertools import product
+from itertools import product, permutations
 
 
 def problem_1():
@@ -717,6 +717,7 @@ def problem_22():
 
     return name_score_sum
 
+
 def problem_23():
     """
     A perfect number is a number for which the sum of its proper divisors is exactly equal to the number. For example, the
@@ -743,3 +744,226 @@ def problem_23():
     cannot_be_written = larger_set - can_be_written_as_sum
 
     return sum(cannot_be_written)
+
+
+def problem_24():
+    """
+    A permutation is an ordered arrangement of objects. For example, 3124 is one possible permutation of the digits \
+    1, 2, 3 and 4. If all of the permutations are listed numerically or alphabetically, we call it lexicographic order.
+    The lexicographic permutations of 0, 1 and 2 are:
+
+    012   021   102   120   201   210
+
+    What is the millionth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9?
+    """
+    numbers = [str(i) for i in range(0, 10)]
+    lexicographic_permutations = [''.join(i) for i in permutations(numbers)]
+    return int(lexicographic_permutations[999999])
+
+
+def problem_25():
+    """
+    The Fibonacci sequence is defined by the recurrence relation:
+
+    Fn = Fn−1 + Fn−2, where F1 = 1 and F2 = 1.
+    Hence the first 12 terms will be:
+
+    F1 = 1
+    F2 = 1
+    F3 = 2
+    F4 = 3
+    F5 = 5
+    F6 = 8
+    F7 = 13
+    F8 = 21
+    F9 = 34
+    F10 = 55
+    F11 = 89
+    F12 = 144
+    The 12th term, F12, is the first term to contain three digits.
+
+    What is the index of the first term in the Fibonacci sequence to contain 1000 digits?
+    """
+
+    fib_gen = fibonacci_generator()
+    index = 0
+    value = next(fib_gen)
+    while len(str(value)) < 1000:
+        value = next(fib_gen)
+        index += 1
+
+    return index
+
+
+def problem_26():
+    """
+    A unit fraction contains 1 in the numerator. The decimal representation of the unit fractions with denominators 2 to 10 are given:
+
+    1/2	= 	0.5
+    1/3	= 	0.(3)
+    1/4	= 	0.25
+    1/5	= 	0.2
+    1/6	= 	0.1(6)
+    1/7	= 	0.(142857)
+    1/8	= 	0.125
+    1/9	= 	0.(1)
+    1/10	= 	0.1
+    Where 0.1(6) means 0.166666..., and has a 1-digit recurring cycle. It can be seen that 1/7 has a 6-digit recurring cycle.
+
+    Find the value of d < 1000 for which 1/d contains the longest recurring cycle in its decimal fraction part.
+    """
+
+    max_len = 0
+    answer = 0
+    for i in range(1, 1000):
+        cycle_len = recurring_cycle_length(i)
+        if cycle_len > max_len:
+            answer = i
+            max_len = cycle_len
+
+    return answer
+
+
+def problem_27():
+    """
+    Euler discovered the remarkable quadratic formula:
+
+    n^2+n+41
+    It turns out that the formula will produce 40 primes for the consecutive integer values 0≤n≤39. However, when n=40,40^2+40+41=40(40+1)+41 is divisible by 41, and certainly when n=41,41^2+41+41 is clearly divisible by 41.
+
+    The incredible formula n^2−79n+1601 was discovered, which produces 80 primes for the consecutive values 0≤n≤79. The product of the coefficients, −79 and 1601, is −126479.
+
+    Considering quadratics of the form:
+
+    n2+an+b, where |a|<1000 and |b|≤1000
+
+    where |n| is the modulus/absolute value of n
+    e.g. |11|=11 and |−4|=4
+    Find the product of the coefficients, a and b, for the quadratic expression that produces the maximum number of primes for consecutive values of n, starting with n=0.
+    """
+
+    max_prime_run = 0
+    answer = (0, 0)
+    for a in range(-999, 1000):
+        for b in range(-1000, 1001):
+            n = 0
+            last_result_was_prime = True
+            prime_count = 0
+            while last_result_was_prime:
+                value = (n ** 2) + (a * n) + b
+                if is_prime(value):
+                    last_result_was_prime = True
+                    prime_count += 1
+                else:
+                    last_result_was_prime = False
+                n += 1
+            if prime_count > max_prime_run:
+                max_prime_run = prime_count
+                # print(max_prime_run)
+                answer = (a, b)
+
+    return answer[0] * answer[1]
+
+
+def problem_28():
+    """
+    Starting with the number 1 and moving to the right in a clockwise direction a 5 by 5 spiral is formed as follows:
+
+    21 22 23 24 25
+    20  7  8  9 10
+    19  6  1  2 11
+    18  5  4  3 12
+    17 16 15 14 13
+
+    It can be verified that the sum of the numbers on the diagonals is 101.
+
+    What is the sum of the numbers on the diagonals in a 1001 by 1001 spiral formed in the same way?
+    """
+
+    # (Right, Down, Left, Up, Right)
+    unmapped_movements = [(1, i - 2, i - 1, i - 1, i - 1) for i in range(3, 1003, 2)]
+    mapped_movements = list()
+
+    for move in unmapped_movements:
+        mapped_movements.append((0, move[0]))
+        mapped_movements.append((move[1], 0))
+        mapped_movements.append((0, -1 * move[2]))
+        mapped_movements.append((-1 * move[3], 0))
+        mapped_movements.append((0, move[4]))
+
+    current_value = 1
+    solution = 1
+
+    for movement in mapped_movements:
+        current_value += max(abs(movement[0]), abs(movement[1]))
+        if movement != (0, 1):
+            solution += current_value
+
+    return solution
+
+
+def problem_29():
+    """
+    Consider all integer combinations of a^b for 2 ≤ a ≤ 5 and 2 ≤ b ≤ 5:
+
+    2^2=4, 2^3=8, 2^4=16, 2^5=32
+    3^2=9, 3^3=27, 3^4=81, 3^5=243
+    4^2=16, 4^3=64, 4^4=256, 4^5=1024
+    5^2=25, 5^3=125, 5^4=625, 5^5=3125
+    If they are then placed in numerical order, with any repeats removed, we get the following sequence of 15 distinct terms:
+
+    4, 8, 9, 16, 25, 27, 32, 64, 81, 125, 243, 256, 625, 1024, 3125
+
+    How many distinct terms are in the sequence generated by ab for 2 ≤ a ≤ 100 and 2 ≤ b ≤ 100?
+    """
+
+    return len(set([a ** b for a in range(2, 101) for b in range(2, 101)]))
+
+
+def problem_30():
+    """
+    Surprisingly there are only three numbers that can be written as the sum of fourth powers of their digits:
+
+    1634 = 1^4 + 6^4 + 3^4 + 4^4
+    8208 = 8^4 + 2^4 + 0^4 + 8^4
+    9474 = 9^4 + 4^4 + 7^4 + 4^4
+    As 1 = 1^4 is not a sum it is not included.
+
+    The sum of these numbers is 1634 + 8208 + 9474 = 19316.
+
+    Find the sum of all the numbers that can be written as the sum of fifth powers of their digits.
+    """
+
+    # 364294 is upper bound because it is the first digit cutoff where the maximum value of the sum of the 5th powers is
+    # less than the maximum allowed by the digit limit ( 364294 < 999999 )
+    return sum([i for i in range(354294) if sum([int(i) ** 5 for i in str(i)]) == i and i != 1])
+
+
+def problem_31(goal_total=200, coin_type=200):
+    """
+    In England the currency is made up of pound, £, and pence, p, and there are eight coins in general circulation:
+
+    1p, 2p, 5p, 10p, 20p, 50p, £1 (100p) and £2 (200p).
+    It is possible to make £2 in the following way:
+
+    1×£1 + 1×50p + 2×20p + 1×5p + 1×2p + 3×1p
+    How many different ways can £2 be made using any number of coins?
+    """
+
+    coin_types = [200, 100, 50, 20, 10, 5, 2, 1]
+    number_of_ways = 0
+
+    print_string = ''
+    for x in range(coin_types.index(coin_type)):
+        print_string = print_string + '\t'
+
+    for i in range((goal_total // coin_type) + 1):
+        if i * coin_type == goal_total:
+            number_of_ways += 1
+            print_string = print_string + f'{i} {coin_type} coins to make {goal_total}'
+        else:
+            if coin_type != 1:
+                print_string = f'{i} {coin_type} coins to make {goal_total}'
+                number_of_ways += recursive_coin_combos(goal_total - (i * coin_type), coin_type=coin_types[coin_types.index(coin_type) + 1])
+
+    return number_of_ways

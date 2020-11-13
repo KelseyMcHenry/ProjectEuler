@@ -253,10 +253,12 @@ def is_abundant(number):
     return sum(proper_divisors(number)) > number
 
 
-# for a given number, returns the length of the longest repeating cycle of digits in 1/number
 def recurring_cycle_length(number):
-    # checks 10000 digits out, using integer division so no floating point rounding issues come up.
-    unit_fraction = str(1*(10 ** 10000) // number)
+    """
+    for a given number, returns the length of the longest repeating cycle of digits in 1/number
+    """
+    # checks 2000 digits out, using integer division so no floating point rounding issues come up.
+    unit_fraction = str(1*(10 ** 2000) // number)
     max_repetitions = 0
     cycle_length = 0
     for i in range(1, len(unit_fraction)):
