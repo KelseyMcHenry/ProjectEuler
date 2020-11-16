@@ -4,6 +4,7 @@ from math import sqrt
 from datetime import date
 from datetime import timedelta
 from itertools import product, permutations
+import cProfile
 
 
 def problem_1():
@@ -1132,3 +1133,304 @@ def problem_38():
     What is the largest 1 to 9 pandigital 9-digit number that can be formed as the concatenated product of an integer with (1,2, ... , n) where n > 1?
     """
 
+    solution = 0
+    for i in range(1, 9999):
+        for n in range(3, 9):
+            number = int(''.join([str(i * num) for num in range(1, n)]))
+            if is_pandigital(number) and number > solution:
+                solution = number
+
+    return solution
+
+
+def problem_39():
+    """
+    If p is the perimeter of a right angle triangle with integral length sides, {a,b,c}, there are exactly three solutions for p = 120.
+
+    {20,48,52}, {24,45,51}, {30,40,50}
+
+    For which value of p ≤ 1000, is the number of solutions maximised?
+    """
+
+    solutions = list()
+    squares = []
+
+    square_gen = square_number_generator()
+    upper_squares_bound = (1000 // 2) ** 2
+    square_num = next(square_gen)
+    while square_num < upper_squares_bound:
+        squares.append(square_num)
+        square_num = next(square_gen)
+
+    valid_abc_triplets = []
+    abc_triplets = product(squares, repeat=3)
+    for triplet in abc_triplets:
+        if triplet[0] + triplet[1] == triplet[2]:
+            valid_abc_triplets.append(triplet)
+
+    max_length = 0
+    solution = 0
+    for p in range(1, 1001):
+        for triplet in valid_abc_triplets:
+            if sqrt(triplet[0]) + sqrt(triplet[1]) + sqrt(triplet[2]) == p:
+                solutions.append(triplet)
+        length = len(solutions)
+        if length > max_length:
+            max_length = length
+            solution = p
+        solutions = []
+
+    return solution
+
+
+def problem_40():
+    """
+    An irrational decimal fraction is created by concatenating the positive integers:
+
+    0.123456789101112131415161718192021...
+
+    It can be seen that the 12th digit of the fractional part is 1.
+
+    If dn represents the nth digit of the fractional part, find the value of the following expression.
+
+    d1 × d10 × d100 × d1000 × d10000 × d100000 × d1000000
+    """
+
+    big_string = ""
+    for i in range(1, 1000001):
+        big_string += str(i)
+
+    return int(big_string[0]) * int(big_string[9]) * int(big_string[99]) * int(big_string[999]) * int(
+        big_string[9999]) * int(big_string[99999]) * int(big_string[999999])
+
+
+def problem_41():
+    """
+    We shall say that an n-digit number is pandigital if it makes use of all the digits 1 to n exactly once. For example, 2143 is a 4-digit pandigital and is also prime.
+
+    What is the largest n-digit pandigital prime that exists?
+    """
+
+    for n in range(9, 2, -1):
+        digits = [str(i) for i in range(1, n)]
+        pandigital_intermediates = permutations(digits)
+        pandigitals = [''.join(intermediate) for intermediate in pandigital_intermediates]
+        pandigitals.sort(reverse=True)
+
+        for pandigital in pandigitals:
+            if is_prime(int(pandigital)):
+                return int(pandigital)
+
+def problem_42():
+    """
+    The nth term of the sequence of triangle numbers is given by, tn = (1/2)n(n+1); so the first ten triangle numbers are:
+
+    1, 3, 6, 10, 15, 21, 28, 36, 45, 55, ...
+
+    By converting each letter in a word to a number corresponding to its alphabetical position and adding these values we
+    form a word value. For example, the word value for SKY is 19 + 11 + 25 = 55 = t10.
+    If the word value is a triangle number then we shall call the word a triangle word.
+
+    Using words.txt (right click and 'Save Link/Target As...'), a 16K text file containing nearly two-thousand common English words, how many are triangle words?
+    """
+
+    with open("../input_files/p042_words.txt", "r") as words:
+        word_list = []
+        for line in words:
+            word_list = (line.replace('"', '').split(','))
+
+        triangle_word_count = 0
+        for word in word_list:
+            if is_triangle_number(word_score(word)):
+                triangle_word_count += 1
+
+        return triangle_word_count
+
+
+def problem_43():
+    """
+    The number, 1406357289, is a 0 to 9 pandigital number because it is made up of each of the digits 0 to 9 in some order, but it also has a rather interesting sub-string divisibility property.
+
+    Let d1 be the 1st digit, d2 be the 2nd digit, and so on. In this way, we note the following:
+
+    d2d3d4=406 is divisible by 2
+    d3d4d5=063 is divisible by 3
+    d4d5d6=635 is divisible by 5
+    d5d6d7=357 is divisible by 7
+    d6d7d8=572 is divisible by 11
+    d7d8d9=728 is divisible by 13
+    d8d9d10=289 is divisible by 17
+    Find the sum of all 0 to 9 pandigital numbers with this property.
+    """
+
+    def has_arbitrary_property(number):
+        str_number = str(number)
+        if int(str_number[1:4]) % 2 != 0:
+            return False
+        if int(str_number[2:5]) % 3 != 0:
+            return False
+        if int(str_number[3:6]) % 5 != 0:
+            return False
+        if int(str_number[4:7]) % 7 != 0:
+            return False
+        if int(str_number[5:8]) % 11 != 0:
+            return False
+        if int(str_number[6:9]) % 13 != 0:
+            return False
+        if int(str_number[7:10]) % 17 != 0:
+            return False
+        return True
+
+    running_sum = 0
+
+    digits = [str(i) for i in range(0, 10)]
+    pandigital_intermediates = permutations(digits)
+    pandigitals = [''.join(intermediate) for intermediate in pandigital_intermediates]
+
+    for pandigital in pandigitals:
+        if has_arbitrary_property(int(pandigital)):
+            running_sum += int(pandigital)
+
+    return running_sum
+
+
+def problem_44():
+    """
+    Pentagonal numbers are generated by the formula, Pn=n(3n−1)/2. The first ten pentagonal numbers are:
+
+    1, 5, 12, 22, 35, 51, 70, 92, 117, 145, ...
+
+    It can be seen that P4 + P7 = 22 + 70 = 92 = P8. However, their difference, 70 − 22 = 48, is not pentagonal.
+
+    Find the pair of pentagonal numbers, Pj and Pk, for which their sum and difference are pentagonal and D = |Pk − Pj| is minimised; what is the value of D?
+    """
+    pentagonal_numbers = [i for i in range(1, 10000000) if is_pentagonal(i)]
+    pentagonal_number_pairs = product(pentagonal_numbers, pentagonal_numbers)
+
+    minimum_difference = 10000000
+    solution = 0
+    for j, k in pentagonal_number_pairs:
+        if is_pentagonal(j + k) and is_pentagonal(abs(j - k)):
+            if abs(j - k) < minimum_difference:
+                minimum_difference = abs(j - k)
+                solution = abs(j - k)
+
+    return solution
+
+
+def problem_45():
+    """
+    Triangle, pentagonal, and hexagonal numbers are generated by the following formulae:
+
+    Triangle	 	Tn=n(n+1)/2	 	 1, 3, 6, 10, 15, ...
+    Pentagonal	 	Pn=n(3n−1)/2	 1, 5, 12, 22, 35, ...
+    Hexagonal	 	Hn=n(2n−1)	   	1, 6, 15, 28, 45, ...
+    It can be verified that T285 = P165 = H143 = 40755.
+
+    Find the next triangle number that is also pentagonal and hexagonal.
+    """
+
+    triangular_gen = triangle_number_generator()
+    candidate = 0
+    while candidate <= 40755:
+        candidate = next(triangular_gen)
+    while True:
+        if is_pentagonal(candidate) and is_hexagonal(candidate):
+            return candidate
+        candidate = next(triangular_gen)
+
+
+def problem_46():
+    """
+    It was proposed by Christian Goldbach that every odd composite number can be written as the sum of a prime and twice a square.
+
+    9 = 7 + 2×12
+    15 = 7 + 2×22
+    21 = 3 + 2×32
+    25 = 7 + 2×32
+    27 = 19 + 2×22
+    33 = 31 + 2×12
+
+    It turns out that the conjecture was false.
+
+    What is the smallest odd composite that cannot be written as the sum of a prime and twice a square?
+    """
+
+    def odd_composite_generator():
+        composite_gen = composite_number_generator()
+        value = next(composite_gen)
+        while True:
+            while value % 2 == 0:
+                value = next(composite_gen)
+            yield value
+            value = next(composite_gen)
+
+    odd_composite_gen = odd_composite_generator()
+    while True:
+        continue_flag = False
+        odd_composite = next(odd_composite_gen)
+        # the max_value for the primes here is the odd composite itself.
+        primes = [i for i in prime_generator(max_value=odd_composite)]
+        # the max_value for the squares here is the sqrt(odd_composite / 2) because
+        twice_squares = [2 * i for i in square_number_generator(max_value=odd_composite / 2)]
+        sum_candidates = product(primes, twice_squares)
+        for s in sum_candidates:
+            if s[0] + s[1] == odd_composite:
+                continue_flag = True
+                break
+        if continue_flag:
+            continue
+        return odd_composite
+
+
+def problem_47():
+    """
+    The first two consecutive numbers to have two distinct prime factors are:
+
+    14 = 2 × 7
+    15 = 3 × 5
+
+    The first three consecutive numbers to have three distinct prime factors are:
+
+    644 = 2² × 7 × 23
+    645 = 3 × 5 × 43
+    646 = 2 × 17 × 19.
+
+    Find the first four consecutive integers to have four distinct prime factors each. What is the first of these numbers?
+    """
+
+    # 210 is the first number that even has 4 prime distinct factors (2 * 3 * 5 * 7)
+    """
+    if we consider the smallest set of 4 distinct factors we get (2, 3, 5, 7)
+    if we are going to have 4 consecutive numbers each with 4 distinct factors, they cannot all have the same sets
+    of factors. 
+    The smallest possible first 4 set of 4 factors (none of which are the same) would be as follows:
+    
+    (2, 3, 5, 7)
+    (2, 5, 7, 11)
+    (2, 3, 5, 11)
+    (2, 3, 7, 11)
+    
+    The products of these sets are:
+    
+    210
+    770
+    330
+    462
+    
+    Because these are not sequential, we know that 770 would be our first starting point at minimum.
+    """
+    index = 770
+    while True:
+        # print(index)
+        four_consecutive_integer_candidate = range(index + 4, index, -1)
+        for candidate in four_consecutive_integer_candidate:
+            number_of_distinct_factors = len(set(prime_factorization_end_early_if_more_than_four_distinct_factors(candidate)))
+            if is_prime(candidate) or number_of_distinct_factors != 4:
+                index += four_consecutive_integer_candidate.index(candidate) + 1
+                break
+        else:
+            return index
+
+
+cProfile.run('problem_47()')

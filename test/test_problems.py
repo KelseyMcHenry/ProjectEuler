@@ -1,6 +1,7 @@
 import unittest
 import time
 from ProblemExecution import *
+import cProfile
 
 problems_and_solutions = {
     problem_1: 233168,
@@ -40,14 +41,23 @@ problems_and_solutions = {
     problem_35: 55,
     problem_36: 872187,
     problem_37: 748317,
-    problem_38: 932718654
+    problem_38: 932718654,
+    problem_39: 840,
+    problem_40: 210,
+    problem_41: 7652413,
+    problem_42: 162,
+    problem_43: 16695334890,
+    problem_44: 5482660,
+    problem_45: 1533776805,
+    problem_46: 5777,
+    problem_47: 134043
 }
 
 
 class TestProblems(unittest.TestCase):
 
     def test_all_problems(self):
-        start = 37
+        start = 47
         for func, solution in problems_and_solutions.items():
             if int(func.__name__[8:]) < start:
                 continue

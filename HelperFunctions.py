@@ -1,19 +1,27 @@
 import math
-from math import factorial, sqrt
+from math import factorial, sqrt, ceil
 import operator as op
-from functools import reduce
-import functools
+from functools import reduce, lru_cache
 
-letters_in_english = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine',
-                      10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen', 14: 'fourteen', 15: 'fifteen', 16: 'sixteen',
-                      17: 'seventeen', 18: 'eighteen', 19: 'nineteen', 20: 'twenty', 30: 'thirty', 40: 'forty', 50: 'fifty',
-                      60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'hundred', 1000: 'thousand'}
+# TODO: Classify all of the helper functions
+
+# ================================================= CONSTANTS =================================================
 
 
-def fibonacci_generator(n=None):
+LETTERS_IN_ENGLISH_NUMBERS = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight',
+                              9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen', 14: 'fourteen',
+                              15: 'fifteen', 16: 'sixteen', 17: 'seventeen', 18: 'eighteen', 19: 'nineteen',
+                              20: 'twenty', 30: 'thirty', 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy',
+                              80: 'eighty', 90: 'ninety', 100: 'hundred', 1000: 'thousand'}
+
+# ================================================= GENERATORS =================================================
+
+
+def fibonacci_generator(n=None, max_value=None):
     """
     Returns a fibonacci number generator
     :param n: if provided, the generator will stop at the nth fibonacci number, otherwise it will continue indefinitely.
+    :param max_value if provided, the generator will stop at the first value to exceed this value
     :return: generator
     """
     a, b = 0, 1
@@ -22,24 +30,22 @@ def fibonacci_generator(n=None):
         while True:
             yield a
             a, b = b, a + b
+            if max_value and a > max_value:
+                break
     else:
         # finite mode
         for _ in range(n):
             yield a
             a, b = b, a + b
+            if max_value and a > max_value:
+                break
 
 
-def is_palindromic(number):
-    """
-    Returns if the number provided is the same forward as backwards
-    """
-    return str(number)[::-1] == str(number)
-
-
-def prime_generator(n=None):
+def prime_generator(n=None, max_value=None):
     """
     Returns a prime number generator
     :param n: if provided, the generator will stop at the nth prime number, otherwise it will continue indefinitely.
+    :param max_value if provided, the generator will stop at the first value to exceed this value
     :return: generator
     """
     x = 2
@@ -51,14 +57,272 @@ def prime_generator(n=None):
                 x += 1
             else:
                 x += 1
+            if max_value and x > max_value:
+                break
     else:
         # finite mode
         for _ in range(n):
             while not is_prime(x):
                 x += 1
+            if max_value and x > max_value:
+                break
             yield x
             x += 1
 
+
+def triangle_number_generator(n=None, max_value=None):
+    """
+    Returns a triangle number generator
+    :param n: if provided, the generator will stop at the nth triangle number, otherwise it will continue indefinitely.
+    :param max_value if provided, the generator will stop at the first value to exceed this value
+    :return: generator
+    """
+    # FORMULA FOR TRIANGULAR NUMBER = n(n+1)/2
+    i = 1
+    if n is None:
+        # infinite mode
+        while True:
+            triangle = i * (i + 1) / 2
+            yield int(triangle)
+            i += 1
+            if max_value and triangle > max_value:
+                break
+    else:
+        # finite mode
+        while i <= n:
+            triangle = i * (i + 1) / 2
+            yield int(triangle)
+            i += 1
+            if max_value and triangle > max_value:
+                break
+
+
+def square_number_generator(n=None, max_value=None):
+    """
+    Returns a square number generator
+    :param n: if provided, the generator will stop at the nth square number, otherwise it will continue indefinitely.
+    :param max_value if provided, the generator will stop at the first value to exceed this value
+    :return: generator
+    """
+
+    i = 1
+    if n is None:
+        # infinite mode
+        while True:
+            square = i ** 2
+            yield square
+            i += 1
+            if max_value and square > max_value:
+                break
+    else:
+        # finite mode
+        while i <= n:
+            square = i ** 2
+            yield square
+            i += 1
+            if max_value and square > max_value:
+                break
+
+
+def pentagonal_number_generator(n=None, max_value=None):
+    """
+    Returns a pentagonal number generator
+    :param n: if provided, the generator will stop at the nth pentagonal number, otherwise it will continue indefinitely.
+    :param max_value if provided, the generator will stop at the first value to exceed this value
+    :return: generator
+    """
+    # FORMULA FOR TRIANGULAR NUMBER = n(n+1)/2
+    i = 1
+    if n is None:
+        # infinite mode
+        while True:
+            pentagonal = (i * (i + 1) / 2) + (i * (i + 1))
+            yield int(pentagonal)
+            i += 1
+            if max_value and pentagonal > max_value:
+                break
+    else:
+        # finite mode
+        while i <= n:
+            pentagonal = (i * (i + 1) / 2) + (i * (i + 1))
+            yield int(pentagonal)
+            i += 1
+            if max_value and pentagonal > max_value:
+                break
+
+
+def composite_number_generator(n=None, max_value=None):
+    """
+        Returns a composite number generator
+        :param n: if provided, the generator will stop at the nth composite number, otherwise it will continue indefinitely.
+        :param max_value if provided, the generator will stop at the first value to exceed this value
+        :return: generator
+        """
+    x = 2
+    if n is None:
+        # infinite mode
+        while True:
+            if not is_prime(x):
+                yield x
+                x += 1
+            else:
+                x += 1
+            if max_value and x > max_value:
+                break
+    else:
+        # finite mode
+        for _ in range(n):
+            while is_prime(x):
+                x += 1
+            if max_value and x > max_value:
+                break
+            yield x
+            x += 1
+
+# ============================================= BOOLEAN CLASSIFIERS =============================================
+
+
+def is_palindromic(number):
+    """
+    Returns if the number provided is the same forward as backwards
+    """
+    return str(number)[::-1] == str(number)
+
+
+@lru_cache(maxsize=None)
+def is_prime(num):
+    """
+    returns True or False if num is prime or not
+    :param num:
+    :return:
+    """
+    # account for negative input
+    num = abs(num)
+    # 1 and 2 are special cases
+    if num == 1:
+        return False
+    if num == 2:
+        return True
+    # throw out odd numbers
+    if num % 2 == 0:
+        return False
+    # starting at 3 and checking every odd number up to the sqrt of the number, check if it has any factors.
+    for i in range(3, int(ceil(sqrt(num)) + 1), 2):
+        if num % i == 0:
+            return False
+    return True
+
+
+def is_amicable(number):
+    """
+    returns a boolean if a number is amicable
+    (Let d(n) be defined as the sum of proper divisors of n (numbers less than n which divide evenly into n).
+    If d(a) = b and d(b) = a, where a ≠ b, then a and b are an amicable pair and each of a and b are called amicable numbers.)
+    """
+    value = sum(proper_divisors(number))
+    if sum(proper_divisors(value)) == number and value != number:
+        return True
+    else:
+        return False
+
+
+def is_abundant(number):
+    """
+    returns if a number is abundant
+    (A number n is called deficient if the sum of its proper divisors is less than n and it is called abundant if this sum exceeds n.)
+    """
+    return sum(proper_divisors(number)) > number
+
+
+def is_pandigital_triplet(a, b, c):
+    """
+    returns a boolean if a triplet of numbers contains only 1 instance of each digit across all 3 numbers
+    """
+    concat = str(a) + str(b) + str(c)
+    if len(concat) != 9:
+        return False
+    for i in range(1, 10):
+        if concat.count(str(i)) != 1:
+            return False
+    # print((a, b, c))
+    return True
+
+
+def is_truncatable_prime(number):
+    """
+    given a number, returns a boolean saying if it is a truncatable prime from left to right and right to left.
+    (Being prime itself, it is possible to continuously remove digits from
+    left to right, and remain prime at each stage: 3797, 797, 97, and 7.
+    Similarly we can work from right to left: 3797, 379, 37, and 3.)
+    """
+    if number in [2, 3, 5, 7]:
+        return False
+    slicesLR = [int(str(number)[i:]) for i in range(0, len(str(number)))]
+    slicesRL = [int(str(number)[:i]) for i in range(1, len(str(number)) + 1)]
+    return all([is_prime(slice) for slice in slicesLR]) and all([is_prime(slice) for slice in slicesRL])
+
+
+def is_pandigital(number):
+    """
+    Given a number, returns a boolean indicating whether or not it is pandigital, IE it contains all digits 1-9
+    once and only once
+    """
+    if len(str(number)) > 9:
+        return False
+    for i in range(1, len(str(number)) + 1):
+        if str(number).count(str(i)) != 1:
+            return False
+    return True
+
+
+def is_triangle_number(number):
+    """
+    given a number returns a boolean if it is a triangle number
+    """
+    try:
+        value = (1 + sqrt(1 + 4 * (2 * number))) / 2
+        return value % 1 == 0
+    except ValueError:
+        return False
+
+
+def is_square(number):
+    """
+    given a number returns a boolean if it is a square number
+    """
+    return sqrt(number) % 1.0 == 0
+
+
+def is_pentagonal(number):
+    """
+    given a number returns a boolean if it is a pentagonal number
+    """
+    return ((1 + sqrt(1 + (4 * 3 * 2 * number))) / 6) % 1 == 0
+
+
+def is_hexagonal(number):
+    """
+    given a number returns a boolean if it is a hexagonal number
+    """
+    return ((1 + sqrt(1 + 8 * number)) / 4) % 1 == 0
+
+
+def is_heptagonal(number):
+    """
+    given a number returns a boolean if it is a heptagonal number
+    """
+    return ((3 + sqrt(9 + 4 * 5 * 2 * number)) / 10) % 1 == 0
+
+
+def is_octagonal(number):
+    """
+    given a number returns a boolean if it is a octagonal number
+    """
+    return ((2 + sqrt(4 + 4 * 3 * number)) / 6) % 1 == 0
+
+
+# ================================================= MATHEMATICAL =================================================
+# ================================================= MISCELLANEOUS =================================================
 
 def primes_under_x(x):
     """
@@ -71,6 +335,7 @@ def primes_under_x(x):
     return primes_list
 
 
+@lru_cache(maxsize=None)
 def prime_factorization(number):
     """
     returns a list containing all the digits in the prime factorization of number
@@ -100,36 +365,45 @@ def prime_factorization(number):
     return prime_factors
 
 
+@lru_cache(maxsize=None)
+def prime_factorization_end_early_if_more_than_four_distinct_factors(number):
+    """
+    returns a list containing all the digits in the prime factorization of number
+
+    :param number:
+    :return:
+    """
+    running_amt = number
+    prime_gen = prime_generator()
+    prime_factors = []
+
+    # start checking factors at 2 since everything is divisible by 1
+    i = 2
+    # check all factors up to the number itself, since all numbers are divisible by themselves, it will terminate there in the case that it is prime.
+    while i <= number:
+        while running_amt % i == 0:
+            # if the number you are checking is a factor, add it to the list and divide the current number by that value.
+            running_amt /= i
+            prime_factors.append(i)
+            if len(set(prime_factors)) == 4 and running_amt != 1:
+                return []
+            if running_amt == 1:
+                return prime_factors
+            # restart the counting again, there can be multiple instances of a factor during prime factorization.
+            i = 2
+        if running_amt == 1:
+            return prime_factors
+        i += 1
+
+    return prime_factors
+
+
 def prime_factors_counts(number):
     """
     returns dict with all the individual digits in the prime factorization and their counts
     """
     factors = prime_factorization(number)
     return {i: factors.count(i) for i in factors}
-
-
-@functools.lru_cache(maxsize=None)
-def is_prime(num):
-    """
-    returns True or False if num is prime or not
-    :param num:
-    :return:
-    """
-    # account for negative input
-    num = abs(num)
-    # 1 and 2 are special cases
-    if num == 1:
-        return False
-    if num == 2:
-        return True
-    # throw out odd numbers
-    if num % 2 == 0:
-        return False
-    # starting at 3 and checking every odd number up to the sqrt of the number, check if it has any factors.
-    for i in range(3, int(math.ceil(math.sqrt(num)) + 1), 2):
-        if num % i == 0:
-            return False
-    return True
 
 
 def product_of_list(input_list):
@@ -140,26 +414,6 @@ def product_of_list(input_list):
     for number in input_list:
         result *= number
     return result
-
-
-def triangle_number_generator(n=None):
-    """
-    Returns a prime number generator
-    :param n: if provided, the generator will stop at the nth prime number, otherwise it will continue indefinitely.
-    :return: generator
-    """
-    # FORMULA FOR TRIANGULAR NUMBER = n(n+1)/2
-    i = 1
-    if n is None:
-        # infinite mode
-        while True:
-            yield i * (i + 1) / 2
-            i += 1
-    else:
-        # finite mode
-        while i <= n:
-            yield i * (i + 1) / 2
-            i += 1
 
 
 def divisors(number):
@@ -199,11 +453,11 @@ def num_letters_in_number(number):
     thousands_digit = number // 1000
     if thousands_digit > 0:
         # thousands digit aka 'one thousand, 5 thousand' etc
-        english += letters_in_english[number // 1000] + ' ' + letters_in_english[1000] + ' '
+        english += LETTERS_IN_ENGLISH_NUMBERS[number // 1000] + ' ' + LETTERS_IN_ENGLISH_NUMBERS[1000] + ' '
     hundreds_digit = number // 100
     if (hundreds_digit > 0) and (hundreds_digit < 10):
         # hundreds digit aka 'one hundred, 5 hundred' etc
-        english += letters_in_english[number // 100] + ' ' + letters_in_english[100] + ' '
+        english += LETTERS_IN_ENGLISH_NUMBERS[number // 100] + ' ' + LETTERS_IN_ENGLISH_NUMBERS[100] + ' '
     less_than_hundreds = number % 100
     if (thousands_digit > 0 or hundreds_digit > 0) and less_than_hundreds > 0:
         # 'British' usage and
@@ -211,12 +465,12 @@ def num_letters_in_number(number):
     tens_digit = number % 100 - number % 10
     ones_digit = number % 10
     if (less_than_hundreds < 20) and less_than_hundreds != 0:
-        english += letters_in_english[less_than_hundreds]
+        english += LETTERS_IN_ENGLISH_NUMBERS[less_than_hundreds]
     else:
         if tens_digit > 0:
-            english += letters_in_english[tens_digit] + ' '
+            english += LETTERS_IN_ENGLISH_NUMBERS[tens_digit] + ' '
         if ones_digit > 0:
-            english += letters_in_english[ones_digit]
+            english += LETTERS_IN_ENGLISH_NUMBERS[ones_digit]
 
     # print(str(number) + " : " + english)
     return len(english.replace(' ', ''))
@@ -230,27 +484,6 @@ def proper_divisors(number):
     if len(divisor_list) > 1:
         divisor_list.remove(number)
     return divisor_list
-
-
-def is_amicable(number):
-    """
-    returns a boolean if a number is amicable
-    (Let d(n) be defined as the sum of proper divisors of n (numbers less than n which divide evenly into n).
-    If d(a) = b and d(b) = a, where a ≠ b, then a and b are an amicable pair and each of a and b are called amicable numbers.)
-    """
-    value = sum(proper_divisors(number))
-    if sum(proper_divisors(value)) == number and value != number:
-        return True
-    else:
-        return False
-
-
-def is_abundant(number):
-    """
-    returns if a number is abundant
-    (A number n is called deficient if the sum of its proper divisors is less than n and it is called abundant if this sum exceeds n.)
-    """
-    return sum(proper_divisors(number)) > number
 
 
 def recurring_cycle_length(number):
@@ -268,20 +501,6 @@ def recurring_cycle_length(number):
                 max_repetitions = count
                 cycle_length = len(unit_fraction) - i
     return cycle_length
-
-
-def is_pandigital_triplet(a, b, c):
-    """
-    returns a boolean if a triplet of numbers contains only 1 instance of each digit across all 3 numbers
-    """
-    concat = str(a) + str(b) + str(c)
-    if len(concat) != 9:
-        return False
-    for i in range(1, 10):
-        if concat.count(str(i)) != 1:
-            return False
-    # print((a, b, c))
-    return True
 
 
 def fraction_in_lowest_common_terms(numerator, denominator):
@@ -325,61 +544,15 @@ def get_rotations(number):
     return results
 
 
-def is_truncatable_prime(number):
+def word_score(word):
     """
-    given a number, returns a boolean saying if it is a truncatable prime from left to right and right to left.
-    (Being prime itself, it is possible to continuously remove digits from
-    left to right, and remain prime at each stage: 3797, 797, 97, and 7.
-    Similarly we can work from right to left: 3797, 379, 37, and 3.)
+    Returns the "score" for a given string by summing the indices of the letters wihthin the alphabet.
+    EG: SKY = 19 + 11 + 25 = 55
     """
-    if number in [2, 3, 5, 7]:
-        return False
-    slicesLR = [int(str(number)[i:]) for i in range(0, len(str(number)))]
-    slicesRL = [int(str(number)[:i]) for i in range(1, len(str(number)) + 1)]
-    return all([is_prime(slice) for slice in slicesLR]) and all([is_prime(slice) for slice in slicesRL])
-
-
-# given the perimeter of a right angle triangle, returns a list of tuples containing
-# all possible integer length combinations of the sides
-def find_right_angle_triangle_lengths(number):
-    solutions = list()
-    upper_limit = (number // 2) + 1
-    for a in range(1, upper_limit):
-        for b in range(1, upper_limit):
-            if a + b < number and a + b + sqrt(a**2 + b**2) == number:
-                solutions.append((a, b, sqrt(a**2 + b**2)))
-    return solutions
-
-
-# given a number returns a boolean if it is a triangle number
-def is_triangle_number(number):
-    try:
-        value = (1 + sqrt(1 + 4 * (2 * number))) / 2
-        return value % 1 == 0
-    except ValueError:
-        return False
-
-
-def is_square(number):
-    return sqrt(number) % 1.0 == 0
-
-
-# given a number returns a boolean if it is a pentagonal number
-def is_pentagonal(number):
-    return ((1 + sqrt(1 + (4 * 3 * 2 * number))) / 6) % 1 == 0
-
-
-# given a number returns a boolean if it is a hexagonal number
-def is_hexagonal(number):
-    return ((1 + sqrt(1 + 8 * number)) / 4) % 1 == 0
-
-
-def is_heptagonal(number):
-    return ((3 + sqrt(9 + 4 * 5 * 2 * number)) / 10) % 1 == 0
-
-
-def is_octagonal(number):
-    return ((2 + sqrt(4 + 4 * 3 * number)) / 6) % 1 == 0
+    score = 0
+    for letter in word:
+        score += (ord(letter) - 64)
+    return score
 
 # given an integer, returns a sorted list containing all the digits
 def digits_in_int(number):
@@ -405,10 +578,6 @@ def len_n_choose_r(n, r):
 
 def flip_number(n):
     return int(str(n)[::-1])
-
-
-def is_palindromic(n):
-    return n == flip_number(n)
 
 
 def square_spiral(side_length, direction='clockwise'):
@@ -510,7 +679,7 @@ def increment_indices(indices, position, rollover_value):
     indices[position] = number_to_use
 
 
-@functools.lru_cache(maxsize=None)
+@lru_cache(maxsize=None)
 def concatenate_numbers(pair):
     return int(str(pair[0]) + str(pair[1]))
 
@@ -551,6 +720,7 @@ def is_cube(number):
         if factors.count(factor) != 3:
             return False
     return True
+
 
 def flatten_number_list(number_list):
     number_list = list(number_list)
