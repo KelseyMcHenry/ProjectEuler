@@ -50,14 +50,20 @@ problems_and_solutions = {
     problem_44: 5482660,
     problem_45: 1533776805,
     problem_46: 5777,
-    problem_47: 134043
+    problem_47: 134043,
+    problem_48: 9110846700,
+    problem_49: 296962999629,
+    problem_50: 997651,
+    problem_51: 121313,
+    problem_52: 142857,
+    problem_53: 4075
 }
 
 
 class TestProblems(unittest.TestCase):
 
     def test_all_problems(self):
-        start = 47
+        start = 53
         for func, solution in problems_and_solutions.items():
             if int(func.__name__[8:]) < start:
                 continue

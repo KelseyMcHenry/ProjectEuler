@@ -2,6 +2,7 @@ import math
 from math import factorial, sqrt, ceil
 import operator as op
 from functools import reduce, lru_cache
+import time
 
 # TODO: Classify all of the helper functions
 
@@ -13,6 +14,7 @@ LETTERS_IN_ENGLISH_NUMBERS = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'fiv
                               15: 'fifteen', 16: 'sixteen', 17: 'seventeen', 18: 'eighteen', 19: 'nineteen',
                               20: 'twenty', 30: 'thirty', 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy',
                               80: 'eighty', 90: 'ninety', 100: 'hundred', 1000: 'thousand'}
+
 
 # ================================================= GENERATORS =================================================
 
@@ -366,36 +368,25 @@ def prime_factorization(number):
 
 
 @lru_cache(maxsize=None)
-def prime_factorization_end_early_if_more_than_four_distinct_factors(number):
+def number_of_distinct_prime_factors_with_prime_cache(number, primes_cache):
     """
     returns a list containing all the digits in the prime factorization of number
 
     :param number:
     :return:
     """
-    running_amt = number
-    prime_gen = prime_generator()
-    prime_factors = []
+    distinct_prime_factors_count = 0
+    upper_limit = int(ceil(sqrt(number)))
 
-    # start checking factors at 2 since everything is divisible by 1
-    i = 2
-    # check all factors up to the number itself, since all numbers are divisible by themselves, it will terminate there in the case that it is prime.
-    while i <= number:
-        while running_amt % i == 0:
-            # if the number you are checking is a factor, add it to the list and divide the current number by that value.
-            running_amt /= i
-            prime_factors.append(i)
-            if len(set(prime_factors)) == 4 and running_amt != 1:
+    for i in primes_cache:
+        if (distinct_prime_factors_count == 0 and i > upper_limit) or i > number:
+            return distinct_prime_factors_count
+        if number % i == 0:
+            distinct_prime_factors_count += 1
+            if distinct_prime_factors_count > 4:
                 return []
-            if running_amt == 1:
-                return prime_factors
-            # restart the counting again, there can be multiple instances of a factor during prime factorization.
-            i = 2
-        if running_amt == 1:
-            return prime_factors
-        i += 1
 
-    return prime_factors
+    return distinct_prime_factors_count
 
 
 def prime_factors_counts(number):
@@ -554,8 +545,11 @@ def word_score(word):
         score += (ord(letter) - 64)
     return score
 
-# given an integer, returns a sorted list containing all the digits
+
 def digits_in_int(number):
+    """
+    given an integer, returns a sorted list containing all the digits
+    """
     val_str = str(number)
     vals = list(val_str)
     values_int = [int(v) for v in vals]
@@ -563,16 +557,20 @@ def digits_in_int(number):
     return values_int
 
 
-# given an integer, returns an unsorted list containing all the digits
 def digits_in_int_unsorted(number):
+    """
+    given an integer, returns an unsorted list containing all the digits
+    """
     val_str = str(number)
     vals = list(val_str)
     values_int = [int(v) for v in vals]
     return values_int
 
 
-# returns how many ways there are to choose r items from a group of n
 def len_n_choose_r(n, r):
+    """
+    returns how many ways there are to choose r items from a group of n
+    """
     return factorial(n) / (factorial(r) * factorial(n - r))
 
 

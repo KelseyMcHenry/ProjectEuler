@@ -529,6 +529,7 @@ def problem_14():
 
     NOTE: Once the chain starts the terms are allowed to go above one million.
     """
+    #TODO: This can possibly be sped up by caching previously known results and checking as you go.
 
     max_count = 0
     winner = -1
@@ -1420,17 +1421,181 @@ def problem_47():
     
     Because these are not sequential, we know that 770 would be our first starting point at minimum.
     """
+    primes_cache = tuple(primes_under_x(10000))
     index = 770
     while True:
-        # print(index)
-        four_consecutive_integer_candidate = range(index + 4, index, -1)
+        four_consecutive_integer_candidate = range(index, index + 4)
         for candidate in four_consecutive_integer_candidate:
-            number_of_distinct_factors = len(set(prime_factorization_end_early_if_more_than_four_distinct_factors(candidate)))
-            if is_prime(candidate) or number_of_distinct_factors != 4:
+            number_of_distinct_factors = number_of_distinct_prime_factors_with_prime_cache(candidate, primes_cache)
+            if number_of_distinct_factors != 4:
                 index += four_consecutive_integer_candidate.index(candidate) + 1
                 break
         else:
             return index
 
 
-cProfile.run('problem_47()')
+def problem_48():
+    """
+    The series, 1^1 + 2^2 + 3^3 + ... + 10^10 = 10405071317.
+
+    Find the last ten digits of the series, 1^1 + 2^2 + 3^3 + ... + 1000^1000.
+    """
+
+    return int(str(sum([i ** i for i in range(1, 1001)]))[-10:])
+
+
+def problem_49():
+    """
+    The arithmetic sequence, 1487, 4817, 8147, in which each of the terms increases by 3330, is unusual in two ways: (i) each of the three terms are prime, and, (ii) each of the 4-digit numbers are permutations of one another.
+
+    There are no arithmetic sequences made up of three 1-, 2-, or 3-digit primes, exhibiting this property, but there is one other 4-digit increasing sequence.
+
+    What 12-digit number do you form by concatenating the three terms in this sequence?
+    """
+
+    for first_term in range(1000, 9998):
+        for arith_increase in range(1, 4500):
+            terms = [first_term, first_term + arith_increase, first_term + 2 * arith_increase]
+            # print(first_term, arith_increase)
+            if all([i < 10000 for i in terms]) and all(is_prime(i) for i in terms) and all(
+                    [tuple(str(i)) in permutations(str(first_term)) for i in terms]):
+                if not (first_term == 1487 and arith_increase == 3330):
+                    return int(str(first_term) + str(first_term + arith_increase) + str(first_term + 2 * arith_increase))
+
+
+def problem_50():
+    """
+    The prime 41, can be written as the sum of six consecutive primes:
+
+    41 = 2 + 3 + 5 + 7 + 11 + 13
+    This is the longest sum of consecutive primes that adds to a prime below one-hundred.
+
+    The longest sum of consecutive primes below one-thousand that adds to a prime, contains 21 terms, and is equal to 953.
+
+    Which prime, below one-million, can be written as the sum of the most consecutive primes?
+    """
+
+    primes = primes_under_x(100000)
+
+    # truncate down the primes list
+    sum_val = 0
+    largest_prime = 0
+    for prime in primes:
+        sum_val += prime
+        if sum_val >= 1000000:
+            sum_val -= prime
+            largest_prime = prime
+            break
+    primes = primes[:primes.index(largest_prime)]
+
+    # coming from bottom up
+    max_len = 0
+    value = 0
+
+    for i in range(1, len(primes) + 1):
+        sub_list = primes[i:]
+        val = sum(sub_list)
+        if is_prime(val):
+            max_len = len(sub_list)
+            value = val
+            break
+
+    for i in range(1, len(primes) + 1):
+        sub_list = primes[:-i]
+        val = sum(sub_list)
+        if is_prime(val) and len(sub_list) > max_len:
+            value = val
+            break
+
+    return value
+
+
+def problem_51():
+    """
+    By replacing the 1st digit of the 2-digit number *3, it turns out that six of the nine possible values: 13, 23, 43, 53, 73, and 83, are all prime.
+
+    By replacing the 3rd and 4th digits of 56**3 with the same digit, this 5-digit number is the first example having seven primes among the ten generated numbers, yielding the family: 56003, 56113, 56333, 56443, 56663, 56773, and 56993. Consequently 56003, being the first member of this family, is the smallest prime with this property.
+
+    Find the smallest prime which, by replacing part of the number (not necessarily adjacent digits) with the same digit, is part of an eight prime value family.
+    """
+
+    from HelperFunctions import is_prime
+    from itertools import combinations
+
+    number = 56003
+    max_prime_family_len = 0
+
+    value_found = False
+
+    while not value_found:
+        # if the initial value is a prime...
+        if is_prime(number):
+            num_string = str(number)
+            # for each possible amount of digits to replace...
+            for num_digits_to_replace in range(1, len(num_string)):
+                prime_family = []
+                indices_to_replace = list(combinations(range(0, len(num_string)), num_digits_to_replace))
+                # for each possible digit to replace them with...
+                for index_set in indices_to_replace:
+                    for number_to_replace_with in range(0, 10):
+                        num_string = str(number)
+                        for index in index_set:
+                            num_string_list = list(num_string)
+                            num_string_list[index] = str(number_to_replace_with)
+                            num_string = "".join(num_string_list)
+                            actual_number = int(num_string)
+                        prime_family.append(actual_number)
+                    copy = prime_family.copy()
+                    for candidate in copy:
+                        if len(str(candidate)) < len(str(number)) or not is_prime(candidate):
+                            prime_family.remove(candidate)
+                    if len(prime_family) > max_prime_family_len:
+                        max_prime_family_len = len(prime_family)
+                    if len(prime_family) == 8 and number in prime_family:
+                        return number
+                    prime_family.clear()
+        number += 1
+
+
+def problem_52():
+    """
+    It can be seen that the number, 125874, and its double, 251748, contain exactly the same digits, but in a different order.
+
+    Find the smallest positive integer, x, such that 2x, 3x, 4x, 5x, and 6x, contain the same digits.
+    """
+
+    x = 1
+    while True:
+        values = [2 * x, 3 * x, 4 * x, 5 * x, 6 * x]
+        digits_in_values = [digits_in_int(val) for val in values]
+        if all(digit_list == digits_in_values[0] for digit_list in digits_in_values):
+            return x
+        x += 1
+
+
+def problem_53():
+    """
+    There are exactly ten ways of selecting three from five, 12345:
+
+    123, 124, 125, 134, 135, 145, 234, 235, 245, and 345
+
+    In combinatorics, we use the notation, 5C3 = 10.
+
+    In general,
+
+    nCr =
+    n!
+    r!(n−r)!
+    ,where r ≤ n, n! = n×(n−1)×...×3×2×1, and 0! = 1.
+    It is not until n = 23, that a value exceeds one-million: 23C10 = 1144066.
+
+    How many, not necessarily distinct, values of  nCr, for 1 ≤ n ≤ 100, are greater than one-million?
+    """
+
+    count = 0
+    for n in range(1, 101):
+        for r in range(1, n):
+            if len_n_choose_r(n, r) >= 1000000:
+                count += 1
+
+    return count
